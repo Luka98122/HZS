@@ -5,13 +5,21 @@ app = Flask(__name__)
 
 # Za sad deployed na
 # https://complaisant-debby-semiarchitecturally.ngrok-free.dev/
-
-@app.route("/health", methods=["GET"])
+x = 0
+@app.route("/api/health", methods=["GET"])
 def health():
-    return jsonify(status="ok"), 200
+    global x
+    x+=1
+    result = {
+        "status" : "ok",
+        "message" : f"HZS API working. This is the {x}th request this session.",  
+    }
+    return jsonify(result), 200
 
-@app.route("/time", methods=["GET"])
+@app.route("/api/time", methods=["GET"])
 def time_rn():
+    global x
+    x+=1
     time_rn = time.time()
     time_later = time.time()+5
     date_rn = datetime.datetime.now()
