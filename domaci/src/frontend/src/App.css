@@ -6,6 +6,7 @@
   box-sizing: border-box;
 }
 
+
 /* Base Styles */
 :root {
   --primary: #6366f1;
@@ -91,6 +92,12 @@ p {
   gap: 0.75rem;
 }
 
+.App{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
 .logo-icon {
   font-size: 2rem;
 }
@@ -150,6 +157,7 @@ p {
 .main-content {
   margin-top: 5rem;
 }
+
 
 /* Hero Section */
 .hero {
@@ -449,6 +457,7 @@ p {
 
 /* Footer */
 .footer {
+  width:100vw;
   padding: 3rem 0 1.5rem;
   border-top: 1px solid var(--border-color);
   background-color: rgba(15, 23, 42, 0.9);
