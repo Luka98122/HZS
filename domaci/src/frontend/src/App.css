@@ -590,3 +590,8 @@ p {
     grid-template-columns: 1fr;
   }
 }
+
+.stat small {
+  opacity: 0.8;
+  font-size: 0.75rem;
+}

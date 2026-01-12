@@ -1,8 +1,33 @@
 // App.tsx
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 
 const App: React.FC = () => {
+  const HEALTH_URL = 'https://hak.hoi5.com/api/health';
+  const [apiStatus, setApiStatus] = useState<'checking' | 'healthy' | 'unhealthy'>('checking');
+  const [apiMessage, setApiMessage] = useState<string>('');
+
+  useEffect(() => {
+    const checkHealth = async () => {
+      try {
+        const response = await fetch(HEALTH_URL);
+        const data = await response.json();
+
+        if (response.ok && data.status === 'ok') {
+          setApiStatus('healthy');
+          setApiMessage(data.message);
+        } else {
+          setApiStatus('unhealthy');
+        }
+      } catch {
+        setApiStatus('unhealthy');
+      }
+    };
+
+    checkHealth();
+  }, []);
+
+
   return (
     <div className="App">
       <header className="header">
@@ -51,6 +76,36 @@ const App: React.FC = () => {
                   <span className="stat-number">100%</span>
                   <span className="stat-label">Open Source</span>
                 </div>
+                <div className="stat">
+                <span className="stat-number">
+                  {apiStatus === 'checking' && '…'}
+                  {apiStatus === 'healthy' && '●'}
+                  {apiStatus === 'unhealthy' && '●'}
+                </span>
+                <span className="stat-label">
+                  API Status:{' '}
+                  <strong
+                    style={{
+                      color:
+                        apiStatus === 'healthy'
+                          ? '#2ecc71'
+                          : apiStatus === 'unhealthy'
+                          ? '#e74c3c'
+                          : '#f1c40f',
+                    }}
+                  >
+                    {apiStatus}
+                  </strong>
+                  <br />
+                  {apiMessage && (
+                    <>
+                      <br />
+                      <small>{apiMessage}</small>
+                    </>
+                  )}
+                </span>
+              </div>
+
               </div>
             </div>
             <div className="hero-visual">
