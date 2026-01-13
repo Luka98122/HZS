@@ -14,10 +14,13 @@ import Workout from './pages/Workout.tsx'
 import Study from './pages/Study.tsx'
 import Focus from './pages/Focus.tsx'
 import Stress from './pages/Stress.tsx'
+import Home from './pages/Home.tsx'
+import ScrollToTop from "./utils/ScrollToTop";
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Router>
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/login" element={<Login />} />
@@ -25,6 +28,7 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/account" element={<Account />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/privacy" element={<Privacy />} />
+        <Route path="/home" element={<Home />} />
         <Route path="/onboarding" element={<Onboarding />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/workout" element={<Workout />} />

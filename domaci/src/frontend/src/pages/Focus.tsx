@@ -22,7 +22,7 @@ const Focus: React.FC = () => {
                 position: 'absolute',
                 bottom: '2rem',
                 opacity: 0.5
-            }}>
+            }} onClick={() => window.location.href = "/home"}>
                 Exit Focus Mode
             </button>
         </div>
