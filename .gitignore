@@ -2,3 +2,5 @@
 venv
 node_modules
 dist
+backend.log
+domaci/src/backend/backend.log
