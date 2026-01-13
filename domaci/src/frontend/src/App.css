@@ -40,7 +40,10 @@ body {
 }
 
 /* Typography */
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
   font-weight: 700;
   line-height: 1.2;
 }
@@ -92,7 +95,7 @@ p {
   gap: 0.75rem;
 }
 
-.App{
+.App {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -256,67 +259,113 @@ p {
   margin-top: 0.5rem;
 }
 
-/* Code Window */
+/* Workout Card */
 .hero-visual {
   position: relative;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
 }
 
-.code-window {
+.workout-card {
   background-color: var(--bg-card);
-  border-radius: 0.75rem;
+  border-radius: 1.5rem;
   overflow: hidden;
-  box-shadow: var(--shadow);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
   border: 1px solid var(--border-color);
+  padding: 1.5rem;
 }
 
-.code-header {
-  background-color: rgba(30, 41, 59, 0.8);
-  padding: 0.75rem 1.25rem;
+.workout-header {
   display: flex;
-  align-items: center;
-  border-bottom: 1px solid var(--border-color);
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
 }
 
-.window-dots {
-  display: flex;
-  gap: 0.5rem;
-  margin-right: 1rem;
+.card-title {
+  display: block;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
 }
 
-.dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-}
-
-.dot.red {
-  background-color: #f87171;
-}
-
-.dot.yellow {
-  background-color: #fbbf24;
-}
-
-.dot.green {
-  background-color: #10b981;
-}
-
-.file-name {
-  font-family: 'Fira Code', 'Courier New', monospace;
+.card-subtitle {
   font-size: 0.875rem;
   color: var(--text-secondary);
 }
 
-.code-content {
-  padding: 1.5rem;
-  overflow-x: auto;
+.activity-icon {
+  width: 3rem;
+  height: 3rem;
+  background-color: rgba(99, 102, 241, 0.1);
+  /* Primary color low opacity */
+  color: var(--primary);
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
 }
 
-.code-content pre {
-  font-family: 'Fira Code', 'Courier New', monospace;
+.workout-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.w-stat {
+  display: flex;
+  flex-direction: column;
+}
+
+.w-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.w-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.w-value small {
   font-size: 0.875rem;
-  line-height: 1.5;
-  color: #e2e8f0;
+  font-weight: 400;
+  color: var(--text-secondary);
+  margin-left: 2px;
+}
+
+.workout-progress {
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.progress-bar {
+  height: 0.75rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  border-radius: 1rem;
+  transition: width 1s ease-out;
 }
 
 /* Features Section */
@@ -457,7 +506,7 @@ p {
 
 /* Footer */
 .footer {
-  width:100vw;
+  width: 100vw;
   padding: 3rem 0 1.5rem;
   border-top: 1px solid var(--border-color);
   background-color: rgba(15, 23, 42, 0.9);
@@ -521,11 +570,11 @@ p {
     grid-template-columns: 1fr;
     gap: 3rem;
   }
-  
+
   .hero-visual {
     order: -1;
   }
-  
+
   .footer-content {
     grid-template-columns: 1fr;
     gap: 2rem;
@@ -537,32 +586,32 @@ p {
     flex-direction: column;
     gap: 1.5rem;
   }
-  
+
   .nav ul {
     flex-wrap: wrap;
     justify-content: center;
     gap: 1.5rem;
   }
-  
+
   .hero-title {
     font-size: 2.25rem;
   }
-  
+
   .hero-stats {
     flex-direction: column;
     gap: 1.5rem;
   }
-  
+
   .steps {
     flex-direction: column;
     gap: 3rem;
   }
-  
+
   .footer-links {
     grid-template-columns: 1fr;
     gap: 2rem;
   }
-  
+
   .hero-buttons {
     flex-direction: column;
     align-items: flex-start;
@@ -573,19 +622,19 @@ p {
   .container {
     padding: 0 1rem;
   }
-  
+
   h1 {
     font-size: 2rem;
   }
-  
+
   h2 {
     font-size: 1.75rem;
   }
-  
+
   .hero-title {
     font-size: 1.75rem;
   }
-  
+
   .features-grid {
     grid-template-columns: 1fr;
   }
@@ -615,7 +664,6 @@ p {
 
 .login-link {
   color: #6c757d;
-  border: 1px solid #dee2e6;
 }
 
 .login-link:hover {
@@ -645,7 +693,7 @@ p {
     margin-right: 1rem;
     gap: 0.5rem;
   }
-  
+
   .auth-link {
     padding: 0.4rem 0.8rem;
     font-size: 0.9rem;

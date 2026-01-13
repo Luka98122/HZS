@@ -34,19 +34,19 @@ const App: React.FC = () => {
       <header className="header">
         <div className="container">
           <div className="logo">
-            <span className="logo-icon">⚡</span>
-            <h1>Nexus</h1>
+            <span className="logo-icon">💪</span>
+            <h1>FitLife</h1>
           </div>
           <nav className="nav">
             <ul>
               <li><a href="#features">Features</a></li>
-              <li><a href="#how-it-works">How It Works</a></li>
-              <li><a href="#team">Team</a></li>
+              <li><a href="#workouts">Workouts</a></li>
+              <li><a href="#trainers">Trainers</a></li>
               <div className="auth-links">
                 <li><Link to="/login" className="auth-link login-link">Login</Link></li>
                 <li><Link to="/register" className="auth-link register-link">Register</Link></li>
               </div>
-              <li className="cta-nav"><a href="#demo">View Demo</a></li>
+              <li className="cta-nav"><a href="#start">Get Started</a></li>
             </ul>
           </nav>
         </div>
@@ -56,92 +56,93 @@ const App: React.FC = () => {
         <section className="hero">
           <div className="container">
             <div className="hero-content">
-              <h2 className="hero-title">Revolutionizing <span className="highlight">Developer Collaboration</span></h2>
+              <h2 className="hero-title">Unlock Your <span className="highlight">Best Self</span></h2>
               <p className="hero-subtitle">
-                A real-time platform for developers to code, debug, and deploy together - 
-                no matter where they are in the world.
+                Your all-in-one companion for fitness, wellness, and nutrition.
+                Track your progress, join challenges, and reach your goals.
               </p>
               <div className="hero-buttons">
-                <a href="#demo" className="btn btn-primary">Try Live Demo</a>
-                <a href="#github" className="btn btn-secondary">
-                  <span className="github-icon">{"</>"}</span>
-                  View on GitHub
+                <a href="#start" className="btn btn-primary">Start Your Journey</a>
+                <a href="#features" className="btn btn-secondary">
+                  <span>Explore Features</span>
                 </a>
               </div>
               <div className="hero-stats">
                 <div className="stat">
-                  <span className="stat-number">24</span>
-                  <span className="stat-label">Hours to Build</span>
+                  <span className="stat-number">10k+</span>
+                  <span className="stat-label">Active Users</span>
                 </div>
                 <div className="stat">
-                  <span className="stat-number">5</span>
-                  <span className="stat-label">Team Members</span>
+                  <span className="stat-number">500+</span>
+                  <span className="stat-label">Workout Guides</span>
                 </div>
                 <div className="stat">
-                  <span className="stat-number">100%</span>
-                  <span className="stat-label">Open Source</span>
+                  <span className="stat-number">98%</span>
+                  <span className="stat-label">Goal Success</span>
                 </div>
                 <div className="stat">
-                <span className="stat-number">
-                  {apiStatus === 'checking' && '…'}
-                  {apiStatus === 'healthy' && '●'}
-                  {apiStatus === 'unhealthy' && '●'}
-                </span>
-                <span className="stat-label">
-                  API Status:{' '}
-                  <strong
-                    style={{
-                      color:
-                        apiStatus === 'healthy'
-                          ? '#2ecc71'
-                          : apiStatus === 'unhealthy'
-                          ? '#e74c3c'
-                          : '#f1c40f',
-                    }}
-                  >
-                    {apiStatus}
-                  </strong>
-                  <br />
-                  {apiMessage && (
-                    <>
-                      <br />
-                      <small>{apiMessage}</small>
-                    </>
-                  )}
-                </span>
-              </div>
+                  <span className="stat-number">
+                    {apiStatus === 'checking' && '…'}
+                    {apiStatus === 'healthy' && '●'}
+                    {apiStatus === 'unhealthy' && '●'}
+                  </span>
+                  <span className="stat-label">
+                    System Status:{' '}
+                    <strong
+                      style={{
+                        color:
+                          apiStatus === 'healthy'
+                            ? '#2ecc71'
+                            : apiStatus === 'unhealthy'
+                              ? '#e74c3c'
+                              : '#f1c40f',
+                      }}
+                    >
+                      {apiStatus}
+                    </strong>
+                    <br />
+                    {apiMessage && (
+                      <>
+                        <br />
+                        <small>{apiMessage}</small>
+                      </>
+                    )}
+                  </span>
+                </div>
 
               </div>
             </div>
             <div className="hero-visual">
-              <div className="code-window">
-                <div className="code-header">
-                  <div className="window-dots">
-                    <div className="dot red"></div>
-                    <div className="dot yellow"></div>
-                    <div className="dot green"></div>
+              <div className="workout-card">
+                <div className="workout-header">
+                  <div>
+                    <span className="card-title">Daily Activity</span>
+                    <div className="card-subtitle">January 13, 2026</div>
                   </div>
-                  <span className="file-name">collaborate.js</span>
+                  <div className="activity-icon">🏃‍♂️</div>
                 </div>
-                <div className="code-content">
-                  <pre>
-{`// Real-time collaboration example
-const session = new CollaborationSession({
-  roomId: 'hackathon-2024',
-  language: 'javascript',
-  users: ['@alex', '@sam', '@jordan']
-});
-
-// Multiple developers can edit simultaneously
-session.on('code-change', (change) => {
-  broadcastToParticipants(change);
-  updateLivePreview();
-});
-
-// Integrated debugging for all participants
-debugSession.shareBreakpoints();
-console.log('Built in 24 hours!');`}
-                  </pre>
+                <div className="workout-stats-grid">
+                  <div className="w-stat">
+                    <span className="w-label">Steps</span>
+                    <span className="w-value">8,432</span>
+                  </div>
+                  <div className="w-stat">
+                    <span className="w-label">Calories</span>
+                    <span className="w-value">420</span>
+                  </div>
+                  <div className="w-stat">
+                    <span className="w-label">Heart Rate</span>
+                    <span className="w-value">112 <small>bpm</small></span>
+                  </div>
+                </div>
+                <div className="workout-progress">
+                  <div className="progress-label">
+                    <span>Daily Goal</span>
+                    <span>84%</span>
+                  </div>
+                  <div className="progress-bar">
+                    <div className="progress-fill" style={{ width: '84%' }}></div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -150,96 +151,91 @@ console.log('Built in 24 hours!');`}
 
         <section id="features" className="features">
           <div className="container">
-            <h2 className="section-title">Why <span className="highlight">Nexus</span> Stands Out</h2>
+            <h2 className="section-title">Why <span className="highlight">FitLife</span>?</h2>
             <div className="features-grid">
               <div className="feature-card">
-                <div className="feature-icon">🚀</div>
-                <h3>Real-time Collaboration</h3>
-                <p>Code together simultaneously with live cursor tracking, shared terminals, and instant updates.</p>
+                <div className="feature-icon">📊</div>
+                <h3>Smart Tracking</h3>
+                <p>Automatically log your runs, lifts, and meals with our intuitive tracking system.</p>
               </div>
               <div className="feature-card">
-                <div className="feature-icon">🔒</div>
-                <h3>Secure by Design</h3>
-                <p>End-to-end encryption for all sessions with permission-based access controls.</p>
+                <div className="feature-icon">🧠</div>
+                <h3>Personalized Plans</h3>
+                <p>AI-driven workout schedules and nutrition plans tailored specifically to your body and goals.</p>
               </div>
               <div className="feature-card">
-                <div className="feature-icon">⚡</div>
-                <h3>Lightning Fast</h3>
-                <p>Optimized WebSockets ensure minimal latency even with dozens of collaborators.</p>
+                <div className="feature-icon">🏆</div>
+                <h3>Community Challenges</h3>
+                <p>Compete with friends, join global leaderboards, and stay motivated together.</p>
               </div>
               <div className="feature-card">
-                <div className="feature-icon">🌐</div>
-                <h3>Language Agnostic</h3>
-                <p>Supports 50+ programming languages with syntax highlighting and language servers.</p>
+                <div className="feature-icon">🥗</div>
+                <h3>Expert Guidance</h3>
+                <p>Access tips, recipes, and video guides from certified coaches and nutritionists.</p>
               </div>
             </div>
           </div>
         </section>
 
-        <section id="how-it-works" className="how-it-works">
+        <section id="workouts" className="how-it-works">
           <div className="container">
             <h2 className="section-title">How It <span className="highlight">Works</span></h2>
             <div className="steps">
               <div className="step">
                 <div className="step-number">1</div>
-                <h3>Create a Session</h3>
-                <p>Start a new collaboration room and invite team members via link or email.</p>
+                <h3>Set Your Goals</h3>
+                <p>Tell us what you want to achieve—weight loss, muscle gain, or better endurance.</p>
               </div>
               <div className="step">
                 <div className="step-number">2</div>
-                <h3>Code Together</h3>
-                <p>Work simultaneously in the same editor with live cursors and shared debugging.</p>
+                <h3>Follow the Plan</h3>
+                <p>Receive your daily workout and meal plan, customized just for you.</p>
               </div>
               <div className="step">
                 <div className="step-number">3</div>
-                <h3>Deploy Instantly</h3>
-                <p>One-click deployment to test environments with integrated CI/CD pipelines.</p>
+                <h3>See Results</h3>
+                <p>Track your improvements over time and celebrate your milestones.</p>
               </div>
             </div>
           </div>
         </section>
 
-        <section id="team" className="team">
+        <section id="trainers" className="team">
           <div className="container">
-            <h2 className="section-title">Our <span className="highlight">Team</span></h2>
-            <p className="section-subtitle">Built by passionate developers during a 24-hour hackathon</p>
+            <h2 className="section-title">Meet Your <span className="highlight">Coaches</span></h2>
+            <p className="section-subtitle">Expert trainers dedicated to your success</p>
             <div className="team-grid">
               <div className="team-member">
-                <div className="member-avatar">AL</div>
+                <div className="member-avatar">AM</div>
                 <h3>Alex Morgan</h3>
-                <p>Backend Architect</p>
+                <p>HIIT Specialist</p>
               </div>
               <div className="team-member">
                 <div className="member-avatar">SJ</div>
                 <h3>Sam Jordan</h3>
-                <p>Frontend Lead</p>
+                <p>Yoga & Mindfulness</p>
               </div>
               <div className="team-member">
                 <div className="member-avatar">KR</div>
                 <h3>Kai Rivera</h3>
-                <p>DevOps Engineer</p>
+                <p>Strength Coach</p>
               </div>
               <div className="team-member">
                 <div className="member-avatar">JT</div>
                 <h3>Jordan Taylor</h3>
-                <p>UX Designer</p>
-              </div>
-              <div className="team-member">
-                <div className="member-avatar">MC</div>
-                <h3>Maya Chen</h3>
-                <p>Product Manager</p>
+                <p>Nutritionist</p>
               </div>
             </div>
           </div>
         </section>
 
-        <section className="demo-cta" id="demo">
+        <section className="demo-cta" id="start">
           <div className="container">
             <div className="cta-content">
-              <h2 className="cta-title">Ready to Collaborate Differently?</h2>
-              <p className="cta-subtitle">Experience the future of developer collaboration today.</p>
-              <a href="#demo" className="btn btn-primary btn-large">Launch Live Demo</a>
-              <p className="cta-note">No account required • Free during hackathon</p>
+              <h2 className="cta-title">Ready to Transform Your Life?</h2>
+              <p className="cta-subtitle">Join thousands of others on their journey to better health.</p>
+              <a href="#register" className="btn btn-primary btn-large">Start Free Trial</a>
+              <p className="cta-note">No credit card required for 7 days • Cancel anytime</p>
             </div>
           </div>
         </section>
@@ -249,33 +245,33 @@ console.log('Built in 24 hours!');`}
         <div className="container">
           <div className="footer-content">
             <div className="footer-logo">
-              <span className="logo-icon">⚡</span>
-              <h2>Nexus</h2>
-              <p className="footer-tagline">Built in 24 hours at Hackathon 2024</p>
+              <span className="logo-icon">💪</span>
+              <h2>FitLife</h2>
+              <p className="footer-tagline">Empowering you to live a healthier active life.</p>
             </div>
             <div className="footer-links">
               <div className="link-column">
-                <h4>Project</h4>
-                <a href="#github">GitHub Repository</a>
-                <a href="#docs">Documentation</a>
-                <a href="#roadmap">Roadmap</a>
+                <h4>Platform</h4>
+                <a href="#features">Features</a>
+                <a href="#pricing">Pricing</a>
+                <a href="#workouts">Workouts</a>
               </div>
               <div className="link-column">
-                <h4>Team</h4>
-                <a href="#team">Meet the Team</a>
-                <a href="#contact">Contact Us</a>
-                <a href="#blog">Blog</a>
+                <h4>Company</h4>
+                <a href="#about">About Us</a>
+                <a href="#careers">Careers</a>
+                <a href="#contact">Contact</a>
               </div>
               <div className="link-column">
                 <h4>Legal</h4>
-                <a href="#privacy">Privacy Policy</a>
-                <a href="#terms">Terms of Use</a>
-                <a href="#license">MIT License</a>
+                <a href="#privacy">Privacy</a>
+                <a href="#terms">Terms</a>
+                <a href="#cookies">Cookies</a>
               </div>
             </div>
           </div>
           <div className="footer-bottom">
-            <p>© 2024 Nexus. Built with passion during a hackathon. All code is open source.</p>
+            <p>© 2026 FitLife Inc. All rights reserved.</p>
           </div>
         </div>
       </footer>
