@@ -32,6 +32,7 @@ Current build script (build.sh) is designed to be ran on the linux server. Can b
 
 # Final checklist:
 - [ ] Demo video
+- [ ] Go over all boilerplate text on site and make sure it uses the correct branding, etc.
 - [ ] PDF documentation
 - [ ] Exported mysql database
 - [ ] Upload all of the above to a cloud storage and email to hzs@fonis.rs
