@@ -215,5 +215,173 @@ def login():
         if conn is not None and conn.is_connected():
             conn.close()
 
+# --------------------
+# Logout endpoint
+# --------------------
+@app.route("/logout", methods=["POST"])
+def logout():
+    response = make_response(jsonify({"message": "Logout successful"}), 200)
+    response.set_cookie(
+        "sessid",
+        "",
+        expires=0,
+        httponly=True,
+        samesite="None",
+        secure=True,
+        domain=".hoi5.com",
+        path="/"
+    )
+    return response
+
+# --------------------
+# Account Helpers
+# --------------------
+def get_user_from_session():
+    """Retrieves the user based on the sessid cookie."""
+    sessid = request.cookies.get("sessid")
+    if not sessid:
+        return None
+
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        # Check session validity
+        query = """
+        SELECT user_id, expires_at, is_valid
+        FROM sessions
+        WHERE session_uuid = %s
+        """
+        cursor.execute(query, (sessid,))
+        session = cursor.fetchone()
+
+        if not session or not session["is_valid"]:
+            return None
+
+        # Check expiration (naive datetime check, ensure db returns datetime object)
+        if session["expires_at"] < datetime.datetime.now():
+            return None
+
+        # Fetch user details
+        user_query = "SELECT id, username, email, full_name, password_hash FROM users WHERE id = %s"
+        cursor.execute(user_query, (session["user_id"],))
+        user = cursor.fetchone()
+        
+        return user
+
+    except Error as e:
+        print("Error fetching user from session:", e)
+        return None
+    finally:
+        if 'cursor' in locals() and cursor:
+            cursor.close()
+        if 'conn' in locals() and conn and conn.is_connected():
+            conn.close()
+
+# --------------------
+# Account Endpoints
+# --------------------
+@app.route("/account", methods=["GET"])
+def get_account():
+    user = get_user_from_session()
+    if not user:
+        return jsonify({"error": "Unauthorized"}), 401
+    
+    # Don't send password_hash back
+    user_response = {
+        "id": user["id"],
+        "username": user["username"],
+        "email": user["email"],
+        "full_name": user["full_name"]
+    }
+    return jsonify({"user": user_response}), 200
+
+@app.route("/account", methods=["PUT"])
+def update_account():
+    user = get_user_from_session()
+    if not user:
+        return jsonify({"error": "Unauthorized"}), 401
+
+    data = request.get_json(silent=True)
+    if not data:
+        return jsonify({"error": "Invalid JSON"}), 400
+
+    # Fields allowed to update
+    username = data.get("username", user["username"])
+    email = data.get("email", user["email"])
+    full_name = data.get("full_name", user["full_name"])
+    password = data.get("password") # Plain text (not implemented hashing here? User sends hash?)
+    # Wait, the register endpoint expects `password_hash`. 
+    # Let's assume the frontend sends `password_hash` if they want to change password, 
+    # OR we handle hashing here. 
+    # Looking at register endpoint: `password_hash = data.get("password_hash")`.
+    # So the frontend seems to be sending a hash? Or the variable name is just `password_hash` but it receives plain text?
+    # Security-wise, commonly backend hashes. But if variable is `password_hash`, maybe frontend does it?
+    # Let's stick to what register does. It takes `password_hash`.
+
+    new_password_hash = data.get("password_hash")
+    
+    password_hash_to_store = new_password_hash if new_password_hash else user["password_hash"]
+
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        query = """
+        UPDATE users
+        SET username = %s, email = %s, full_name = %s, password_hash = %s
+        WHERE id = %s
+        """
+        cursor.execute(query, (username, email, full_name, password_hash_to_store, user["id"]))
+        conn.commit()
+
+        return jsonify({
+            "message": "Account updated successfully",
+            "user": {
+                "id": user["id"],
+                "username": username,
+                "email": email,
+                "full_name": full_name
+            }
+        }), 200
+
+    except Error as e:
+        return jsonify({"error": str(e)}), 500
+    finally:
+        if 'cursor' in locals() and cursor:
+            cursor.close()
+        if 'conn' in locals() and conn and conn.is_connected():
+            conn.close()
+
+@app.route("/account", methods=["DELETE"])
+def delete_account():
+    user = get_user_from_session()
+    if not user:
+        return jsonify({"error": "Unauthorized"}), 401
+
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        # Delete sessions first (optional if cascade exists, but safe)
+        cursor.execute("DELETE FROM sessions WHERE user_id = %s", (user["id"],))
+        
+        # Delete user
+        cursor.execute("DELETE FROM users WHERE id = %s", (user["id"],))
+        conn.commit()
+
+        response = make_response(jsonify({"message": "Account deleted successfully"}), 200)
+        # Clear cookie
+        response.set_cookie("sessid", "", expires=0, httponly=True, samesite="None", secure=True, domain=".hoi5.com", path="/")
+        return response
+
+    except Error as e:
+        return jsonify({"error": str(e)}), 500
+    finally:
+        if 'cursor' in locals() and cursor:
+            cursor.close()
+        if 'conn' in locals() and conn and conn.is_connected():
+            conn.close()
+
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=5050)

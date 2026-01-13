@@ -7,6 +7,36 @@ const App: React.FC = () => {
   const HEALTH_URL = 'https://hak.hoi5.com/api/health';
   const [apiStatus, setApiStatus] = useState<'checking' | 'healthy' | 'unhealthy'>('checking');
   const [apiMessage, setApiMessage] = useState<string>('');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const checkAuth = () => {
+      const isAuth = localStorage.getItem('isAuthenticated') === 'true';
+      setIsAuthenticated(isAuth);
+    };
+
+    checkAuth();
+    // Listen for storage events to update state if login happens in another tab/window
+    window.addEventListener('storage', checkAuth);
+    return () => window.removeEventListener('storage', checkAuth);
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await fetch('https://hak.hoi5.com/api/logout', {
+        method: 'POST',
+        credentials: 'include',
+      });
+    } catch (error) {
+      console.error('Logout failed', error);
+    } finally {
+      localStorage.removeItem('isAuthenticated');
+      localStorage.removeItem('user');
+      sessionStorage.removeItem('user');
+      setIsAuthenticated(false);
+      window.location.reload();
+    }
+  };
 
   useEffect(() => {
     const checkHealth = async () => {
@@ -43,8 +73,23 @@ const App: React.FC = () => {
               <li><a href="#workouts">Workouts</a></li>
               <li><a href="#trainers">Trainers</a></li>
               <div className="auth-links">
-                <li><Link to="/login" className="auth-link login-link">Login</Link></li>
-                <li><Link to="/register" className="auth-link register-link">Register</Link></li>
+                {isAuthenticated ? (
+                  <>
+                    <li>
+                      <Link to="/account" className="auth-link login-link">Account</Link>
+                    </li>
+                    <li>
+                      <button onClick={handleLogout} className="auth-link login-link" style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
+                        Logout
+                      </button>
+                    </li>
+                  </>
+                ) : (
+                  <>
+                    <li><Link to="/login" className="auth-link login-link">Login</Link></li>
+                    <li><Link to="/register" className="auth-link register-link">Register</Link></li>
+                  </>
+                )}
               </div>
               <li className="cta-nav"><a href="#start">Get Started</a></li>
             </ul>

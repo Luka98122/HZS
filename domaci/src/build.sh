@@ -14,9 +14,7 @@ FRONTEND_TARGET="/var/www/reactapp"
 # FRONTEND (React + Vite)
 ############################
 echo "📦 Building frontend..."
-source source ./domaci/src/backend/venv/bin/activate
 cd "$FRONTEND_DIR"
-
 npm install
 npm run build
 
