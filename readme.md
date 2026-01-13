@@ -20,6 +20,7 @@ Current build script (build.sh) is designed to be ran on the linux server. Can b
 - [X] Have a github repo
 - [ ] Switch repo to public
 - [X] Have at least one form.
+- [X] CRUD operations
 - [X] Frontend data validation ( regex )
 - [X] Use primarily grid and flexbox
 
