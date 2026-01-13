@@ -6,6 +6,8 @@ import App from './App.tsx'
 import Login from './pages/Login.tsx'
 import Register from './pages/Register.tsx'
 import Account from './pages/Account.tsx'
+import Terms from './pages/Terms.tsx'
+import Privacy from './pages/Privacy.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -15,6 +17,8 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/account" element={<Account />} />
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/privacy" element={<Privacy />} />
       </Routes>
     </Router>
   </StrictMode>,

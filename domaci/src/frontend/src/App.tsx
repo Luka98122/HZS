@@ -309,8 +309,8 @@ const App: React.FC = () => {
               </div>
               <div className="link-column">
                 <h4>Legal</h4>
-                <a href="#privacy">Privacy</a>
-                <a href="#terms">Terms</a>
+                <Link to="/privacy">Privacy</Link>
+                <Link to="/terms">Terms</Link>
                 <a href="#cookies">Cookies</a>
               </div>
             </div>
