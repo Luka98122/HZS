@@ -1,6 +1,7 @@
 // App.tsx
 import React, { useEffect, useState } from 'react';
 import './App.css';
+import { Link } from 'react-router-dom';
 
 const App: React.FC = () => {
   const HEALTH_URL = 'https://hak.hoi5.com/api/health';
@@ -41,6 +42,10 @@ const App: React.FC = () => {
               <li><a href="#features">Features</a></li>
               <li><a href="#how-it-works">How It Works</a></li>
               <li><a href="#team">Team</a></li>
+              <div className="auth-links">
+                <li><Link to="/login" className="auth-link login-link">Login</Link></li>
+                <li><Link to="/register" className="auth-link register-link">Register</Link></li>
+              </div>
               <li className="cta-nav"><a href="#demo">View Demo</a></li>
             </ul>
           </nav>
