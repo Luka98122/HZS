@@ -616,6 +616,19 @@ p {
     flex-direction: column;
     align-items: flex-start;
   }
+
+  .main-content {
+    margin-top: 14rem;
+  }
+
+  .hero-stats {
+    align-items: center;
+  }
+
+  .stat {
+    align-items: center;
+    text-align: center;
+  }
 }
 
 @media (max-width: 480px) {
