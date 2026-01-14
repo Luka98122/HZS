@@ -7,7 +7,7 @@ const Study: React.FC = () => {
             <h1 className="section-title">Deep Work Session</h1>
 
             <div className="study-timer-section">
-                <p style={{ letterSpacing: '0.2rem', textTransform: 'uppercase', color: '#6366f1' }}>Focus Timer</p>
+                <p style={{ letterSpacing: '0.2rem', textTransform: 'uppercase', color: '#007B5F' }}>Focus Timer</p>
                 <div className="timer">25:00</div>
                 <div className="study-controls">
                     <button className="btn btn-primary btn-large">Start Focus</button>
