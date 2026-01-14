@@ -22,6 +22,13 @@
     text-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
 }
 
+.btn-primary {
+    background-color: #007B5F;
+    color: aliceblue;
+    padding: 15px 30px;
+    border: none;
+}
+
 .study-controls {
     display: flex;
     justify-content: center;
