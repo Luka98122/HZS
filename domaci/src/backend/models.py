@@ -12,9 +12,6 @@ DATABASE_URL = f"mysql+pymysql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD'
 
 engine = create_engine(DATABASE_URL, echo=False)
 
-
-# ==================== Core Tables ====================
-
 class User(SQLModel, table=True):
     __tablename__ = "users" # type: ignore
 
@@ -25,7 +22,6 @@ class User(SQLModel, table=True):
     password_hash: str = Field(max_length=255)
     created_at: datetime = Field(default_factory=datetime.now)
 
-
 class SessionDB(SQLModel, table=True):
     __tablename__ = "sessions" # type: ignore
 
@@ -34,9 +30,6 @@ class SessionDB(SQLModel, table=True):
     created_at: datetime = Field(default_factory=datetime.now)
     expires_at: datetime
     is_valid: bool = Field(default=True)
-
-
-# ==================== Onboarding ====================
 
 class OnboardingData(SQLModel, table=True):
     __tablename__ = "onboarding_data" # type: ignore
@@ -51,9 +44,6 @@ class OnboardingData(SQLModel, table=True):
     recommendations: Optional[str] = Field(default=None, sa_column=Column(TEXT))
     completed_at: datetime = Field(default_factory=datetime.now)
 
-
-# ==================== Physical Health ====================
-
 class WorkoutSession(SQLModel, table=True):
     __tablename__ = "workout_sessions" # type: ignore
 
@@ -63,7 +53,6 @@ class WorkoutSession(SQLModel, table=True):
     end_time: Optional[datetime] = None
     total_duration: int = Field(default=0)  # u sekundama
     total_calories_burned: float = Field(default=0.0)
-
 
 class Exercise(SQLModel, table=True):
     __tablename__ = "exercises" # type: ignore
@@ -76,7 +65,6 @@ class Exercise(SQLModel, table=True):
     calories_burned: float
     completed_at: datetime = Field(default_factory=datetime.now)
 
-
 class WaterIntake(SQLModel, table=True):
     __tablename__ = "water_intake" # type: ignore
 
@@ -86,7 +74,6 @@ class WaterIntake(SQLModel, table=True):
     date: date
     logged_at: datetime = Field(default_factory=datetime.now)
 
-
 class StretchReminder(SQLModel, table=True):
     __tablename__ = "stretch_reminders" # type: ignore
 
@@ -95,9 +82,6 @@ class StretchReminder(SQLModel, table=True):
     reminded_at: datetime = Field(default_factory=datetime.now)
     completed: bool = Field(default=False)
     completed_at: Optional[datetime] = None
-
-
-# ==================== Study Mode ====================
 
 class StudySession(SQLModel, table=True):
     __tablename__ = "study_sessions" # type: ignore
@@ -109,7 +93,6 @@ class StudySession(SQLModel, table=True):
     total_duration: int = Field(default=0)  # u sekundama
     pomodoro_count: int = Field(default=0)
     distraction_count: int = Field(default=0)
-
 
 class StudyTask(SQLModel, table=True):
     __tablename__ = "study_tasks" # type: ignore
@@ -124,7 +107,6 @@ class StudyTask(SQLModel, table=True):
     created_at: datetime = Field(default_factory=datetime.now)
     completed_at: Optional[datetime] = None
 
-
 class StudyStreak(SQLModel, table=True):
     __tablename__ = "study_streaks" # type: ignore
 
@@ -133,9 +115,6 @@ class StudyStreak(SQLModel, table=True):
     current_streak: int = Field(default=0)
     longest_streak: int = Field(default=0)
     last_study_date: Optional[date] = None
-
-
-# ==================== Focus Mode ====================
 
 class FocusSession(SQLModel, table=True):
     __tablename__ = "focus_sessions" # type: ignore
@@ -148,7 +127,6 @@ class FocusSession(SQLModel, table=True):
     ambient_sound: Optional[str] = Field(default=None, max_length=255)
     completed_at: datetime = Field(default_factory=datetime.now)
 
-
 class GratitudeEntry(SQLModel, table=True):
     __tablename__ = "gratitude_entries" # type: ignore
 
@@ -157,9 +135,6 @@ class GratitudeEntry(SQLModel, table=True):
     entry_text: str = Field(sa_column=Column(TEXT))
     created_at: datetime = Field(default_factory=datetime.now)
     date: date
-
-
-# Stress
 
 class MoodCheckin(SQLModel, table=True):
     __tablename__ = "mood_checkins" # type: ignore

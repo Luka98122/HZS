@@ -7,7 +7,6 @@ from sqlmodel import Session, asc, desc, select
 
 workout_bp = Blueprint('workout', __name__, url_prefix='/api')
 
-
 # Workout session
 
 @workout_bp.route("/workout/start", methods=["POST"])
@@ -174,7 +173,6 @@ def get_workout_history():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-
 # Water intake
 
 @workout_bp.route("/water", methods=["POST"])
@@ -312,7 +310,6 @@ def get_water_week():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
 
 # Stretch reminder
 

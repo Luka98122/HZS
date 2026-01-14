@@ -7,7 +7,6 @@ from sqlmodel import Session, func, select, desc
 
 stress_bp = Blueprint('stress', __name__, url_prefix='/api')
 
-
 # Mood check-in
 
 @stress_bp.route("/mood", methods=["POST"])
@@ -30,11 +29,9 @@ def create_mood_checkin():
     if mood_score is None:
         return jsonify({"error": "mood_score is required"}), 400
 
-    # Validate mood score range (1-5)
     if not (1 <= mood_score <= 5):
         return jsonify({"error": "mood_score must be between 1 and 5"}), 400
 
-    # Validate notes length if provided
     if notes and len(notes) > 5000:
         return jsonify({"error": "Notes must be 5000 characters or less"}), 400
 
@@ -136,7 +133,6 @@ def get_mood_average():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-
 # Stress journal
 
 @stress_bp.route("/journal", methods=["POST"])
@@ -158,7 +154,6 @@ def create_journal_entry():
     if not entry_text:
         return jsonify({"error": "entry_text is required"}), 400
 
-    # Validate max length (5000 chars as per spec)
     if len(entry_text) > 5000:
         return jsonify({"error": "Entry text must be 5000 characters or less"}), 400
 

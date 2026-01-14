@@ -7,9 +7,6 @@ from sqlmodel import Session, desc, select
 
 focus_bp = Blueprint('focus', __name__, url_prefix='/api')
 
-
-# ==================== Focus Session Routes ====================
-
 @focus_bp.route("/focus/session", methods=["POST"])
 def create_focus_session():
     """Create a new focus session (breathing, meditation, or ambient)"""
@@ -32,7 +29,6 @@ def create_focus_session():
     if not session_type or duration is None:
         return jsonify({"error": "session_type and duration are required"}), 400
 
-    # Validate session type
     valid_types = ["breathing", "meditation", "ambient"]
     if session_type not in valid_types:
         return jsonify({"error": f"session_type must be one of {valid_types}"}), 400
@@ -100,8 +96,7 @@ def get_focus_history():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-
-# ==================== Gratitude Journal Routes ====================
+# Gratitude journal
 
 @focus_bp.route("/gratitude", methods=["POST"])
 def create_gratitude_entry():
@@ -123,7 +118,6 @@ def create_gratitude_entry():
     if not entry_text or not date_str:
         return jsonify({"error": "entry_text and date are required"}), 400
 
-    # Validate max length (5000 chars as per spec)
     if len(entry_text) > 5000:
         return jsonify({"error": "Entry text must be 5000 characters or less"}), 400
 

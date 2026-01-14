@@ -15,7 +15,6 @@ from sqlmodel import Session, func, select
 
 dashboard_bp = Blueprint('dashboard', __name__, url_prefix='/api')
 
-
 @dashboard_bp.route("/stats/overview", methods=["GET"])
 def get_stats_overview():
     """Get aggregated stats for the dashboard"""
@@ -28,12 +27,10 @@ def get_stats_overview():
 
     try:
         with Session(engine) as session:
-            # Calculate date ranges
             today = date.today()
             week_ago = today - timedelta(days=6)
             week_ago_datetime = datetime.now() - timedelta(days=6)
 
-            # 1. Workouts this week
             workouts_this_week = session.exec(
             	select(func.count()).select_from(WorkoutSession)
                 .where(
@@ -42,7 +39,6 @@ def get_stats_overview():
                 )
             ).first() or 0
 
-            # 2. Study hours this week
             study_duration = session.exec(
                 select(func.sum(StudySession.total_duration))
                 .where(
@@ -52,13 +48,11 @@ def get_stats_overview():
             ).first() or 0
             study_hours_this_week = round(study_duration / 3600, 2) if study_duration else 0.0
 
-            # 3. Current study streak
             streak = session.exec(
                 select(StudyStreak).where(StudyStreak.user_id == user.id)
             ).first()
             current_study_streak = streak.current_streak if streak else 0
 
-            # 4. Average mood (last 7 days)
             avg_mood = session.exec(
                 select(func.avg(MoodCheckin.mood_score))
                 .where(
@@ -68,7 +62,6 @@ def get_stats_overview():
             ).first()
             avg_mood_7days = round(float(avg_mood), 2) if avg_mood else 0.0
 
-            # 5. Water average (last 7 days)
             water_entries = session.exec(
                 select(WaterIntake)
                 .where(
@@ -78,11 +71,9 @@ def get_stats_overview():
                 )
             ).all()
 
-            # Calculate average across all 7 days (including days with 0 glasses)
             total_glasses = sum(entry.glasses for entry in water_entries)
             water_avg_7days = round(total_glasses / 7, 2)
 
-            # 6. Focus sessions this week
             focus_sessions_this_week = session.exec(
             	select(func.count()).select_from(FocusSession)
                 .where(
@@ -91,7 +82,6 @@ def get_stats_overview():
                 )
             ).first() or 0
 
-            # 7. Total calories burned this week
             total_calories = session.exec(
                 select(func.sum(WorkoutSession.total_calories_burned))
                 .where(

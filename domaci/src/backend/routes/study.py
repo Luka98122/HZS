@@ -7,7 +7,6 @@ from sqlmodel import Session, desc, select
 
 study_bp = Blueprint('study', __name__, url_prefix='/api')
 
-
 # Study session
 
 @study_bp.route("/study/start", methods=["POST"])
@@ -191,7 +190,6 @@ def get_study_history():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-
 # Study task
 
 @study_bp.route("/study/task", methods=["POST"])
@@ -214,7 +212,6 @@ def create_task():
     if not task_name or estimated_time is None:
         return jsonify({"error": "task_name and estimated_time are required"}), 400
 
-    # Validate task name length
     if len(task_name) > 200:
         return jsonify({"error": "Task name must be 200 characters or less"}), 400
 
@@ -363,7 +360,6 @@ def delete_task(task_id: int):
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
 
 # Study streak
 
