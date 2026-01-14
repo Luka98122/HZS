@@ -72,25 +72,21 @@ const App: React.FC = () => {
               <li><a href="#features">Features</a></li>
               <li><a href="#workouts">Workouts</a></li>
               <li><a href="#trainers">Trainers</a></li>
-              <div className="auth-links">
+              <li className="auth-links">
                 {isAuthenticated ? (
                   <>
-                    <li>
-                      <Link to="/account" className="auth-link login-link">Account</Link>
-                    </li>
-                    <li>
-                      <button onClick={handleLogout} className="auth-link login-link" style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
-                        Logout
-                      </button>
-                    </li>
+                    <Link to="/account" className="auth-link login-link">Account</Link>
+                    <button onClick={handleLogout} className="auth-link login-link" style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
+                      Logout
+                    </button>
                   </>
                 ) : (
                   <>
-                    <li><Link to="/login" className="auth-link login-link">Login</Link></li>
-                    <li><Link to="/register" className="auth-link register-link">Register</Link></li>
+                    <Link to="/login" className="auth-link login-link">Login</Link>
+                    <Link to="/register" className="auth-link register-link">Register</Link>
                   </>
                 )}
-              </div>
+              </li>
               <li className="cta-nav"><a href="#start">Get Started</a></li>
             </ul>
           </nav>
