@@ -16,11 +16,13 @@ import Focus from './pages/Focus.tsx'
 import Stress from './pages/Stress.tsx'
 import Home from './pages/Home.tsx'
 import ScrollToTop from "./utils/ScrollToTop";
+import SidebarMenu from './utils/SidebarMenu';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Router>
       <ScrollToTop />
+      <SidebarMenu />
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/login" element={<Login />} />

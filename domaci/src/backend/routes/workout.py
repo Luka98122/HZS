@@ -5,7 +5,7 @@ from models import Exercise, StretchReminder, WaterIntake, WorkoutSession, engin
 from routes.auth import get_user_from_session
 from sqlmodel import Session, asc, desc, select
 
-workout_bp = Blueprint('workout', __name__, url_prefix='/api')
+workout_bp = Blueprint('workout', __name__)
 
 # Workout session
 

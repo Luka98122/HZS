@@ -13,7 +13,7 @@ from models import (
 from routes.auth import get_user_from_session
 from sqlmodel import Session, func, select
 
-dashboard_bp = Blueprint('dashboard', __name__, url_prefix='/api')
+dashboard_bp = Blueprint('dashboard', __name__)
 
 @dashboard_bp.route("/stats/overview", methods=["GET"])
 def get_stats_overview():

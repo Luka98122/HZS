@@ -5,7 +5,7 @@ from models import StudySession, StudyStreak, StudyTask, engine
 from routes.auth import get_user_from_session
 from sqlmodel import Session, desc, select
 
-study_bp = Blueprint('study', __name__, url_prefix='/api')
+study_bp = Blueprint('study', __name__)
 
 # Study session
 

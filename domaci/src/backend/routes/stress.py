@@ -5,7 +5,7 @@ from models import MoodCheckin, StressJournal, engine
 from routes.auth import get_user_from_session
 from sqlmodel import Session, func, select, desc
 
-stress_bp = Blueprint('stress', __name__, url_prefix='/api')
+stress_bp = Blueprint('stress', __name__)
 
 # Mood check-in
 

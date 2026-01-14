@@ -4,7 +4,7 @@ from models import OnboardingData, engine
 from routes.auth import get_user_from_session
 from sqlmodel import Session, select
 
-onboarding_bp = Blueprint('onboarding', __name__, url_prefix='/api')
+onboarding_bp = Blueprint('onboarding', __name__)
 
 
 @onboarding_bp.route("/onboarding", methods=["POST"])

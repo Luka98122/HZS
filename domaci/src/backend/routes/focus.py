@@ -5,7 +5,7 @@ from models import FocusSession, GratitudeEntry, engine
 from routes.auth import get_user_from_session
 from sqlmodel import Session, desc, select
 
-focus_bp = Blueprint('focus', __name__, url_prefix='/api')
+focus_bp = Blueprint('focus', __name__)
 
 @focus_bp.route("/focus/session", methods=["POST"])
 def create_focus_session():

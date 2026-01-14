@@ -64,6 +64,7 @@ def time_rn():
         "date": str(datetime.datetime.now())
     }), 200
 
+print(app.url_map)
 
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=5050)

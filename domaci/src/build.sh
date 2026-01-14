@@ -35,8 +35,6 @@ fi
 
 # Activate venv and install dependencies
 echo "Installing dependencies..."
-source venv/bin/activate
-pip install -r requirements.txt
 
 # Check for .env file
 if [ ! -f ".env" ]; then

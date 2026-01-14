@@ -1,7 +1,40 @@
+/* Study.css */
 .study-container {
     padding: 6rem 2rem 2rem;
     min-height: 100vh;
     background-color: var(--bg-dark);
+    color: var(--text-color);
+}
+
+.streak-display {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background-color: var(--bg-card);
+    border-radius: 1rem;
+    border: 1px solid var(--border-color);
+}
+
+.streak-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.streak-label {
+    font-size: 0.9rem;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.05rem;
+}
+
+.streak-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #007B5F;
 }
 
 .study-timer-section {
@@ -17,41 +50,238 @@
     font-size: 6rem;
     font-weight: 700;
     font-family: monospace;
-    color: (#007B5F);
+    color: #007B5F;
     margin: 1rem 0;
-    text-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
-}
-
-.btn-primary {
-    background-color: #007B5F;
-    color: aliceblue;
-    padding: 15px 30px;
-    border: none;
+    text-shadow: 0 0 20px rgba(0, 123, 95, 0.3);
 }
 
 .study-controls {
     display: flex;
     justify-content: center;
     gap: 1rem;
+    margin-top: 2rem;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.05rem;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.btn-primary {
+    background-color: #007B5F;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #00644f;
+}
+
+.btn-secondary {
+    background-color: #475569;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #334155;
+}
+
+.btn-success {
+    background-color: #34d399;
+    color: white;
+}
+
+.btn-danger {
+    background-color: #ef4444;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #dc2626;
+}
+
+.btn-large {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+}
+
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+}
+
+.session-controls {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.session-stats {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    color: #94a3b8;
+}
+
+.session-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.task-management {
+    background-color: var(--bg-card);
+    padding: 2rem;
+    border-radius: 1rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--border-color);
+}
+
+.task-management h2 {
+    margin-bottom: 1.5rem;
+    color: #007B5F;
+}
+
+.task-input {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.task-input-field {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    background-color: var(--bg-dark);
+    color: var(--text-color);
+    font-size: 1rem;
+}
+
+.task-time-select {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    background-color: var(--bg-dark);
+    color: var(--text-color);
+    font-size: 1rem;
 }
 
 .task-board {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
 }
 
 .task-column {
     background-color: rgba(30, 41, 59, 0.5);
-    padding: 1rem;
+    padding: 1.5rem;
     border-radius: 1rem;
+    min-height: 400px;
 }
 
 .task-card {
     background-color: var(--bg-card);
     padding: 1rem;
-    margin-bottom: 0.75rem;
+    margin-bottom: 1rem;
     border-radius: 0.5rem;
     border: 1px solid var(--border-color);
-    cursor: grab;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+.task-card:hover {
+    border-color: #007B5F;
+    transform: translateX(2px);
+}
+
+.task-card.completed {
+    opacity: 0.8;
+    border-left: 4px solid #34d399;
+}
+
+.task-content {
+    flex: 1;
+}
+
+.task-content h4 {
+    margin: 0 0 0.5rem 0;
+    color: var(--text-color);
+}
+
+.task-content p {
+    margin: 0.25rem 0;
+    color: #94a3b8;
+    font-size: 0.9rem;
+}
+
+.task-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Variables for theme */
+:root {
+    --bg-dark: #0f172a;
+    --bg-card: #1e293b;
+    --border-color: #334155;
+    --text-color: #f8fafc;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .study-container {
+        padding: 5rem 1rem 1rem;
+    }
+    
+    .timer {
+        font-size: 4rem;
+    }
+    
+    .study-controls {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .btn-large {
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .task-input {
+        flex-direction: column;
+    }
+    
+    .task-input-field,
+    .task-time-select,
+    .task-input .btn {
+        width: 100%;
+    }
+    
+    .session-buttons {
+        flex-wrap: wrap;
+    }
+    
+    .task-board {
+        grid-template-columns: 1fr;
+    }
 }

@@ -34,6 +34,7 @@ const Home: React.FC = () => {
 
     return (
         <div className="home-container">
+            
             <h1 className="home-greeting">
                 {user ? `${getGreeting()}, ${user.full_name}` : 'Hello there!'}
             </h1>
