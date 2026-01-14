@@ -118,8 +118,8 @@ const Login: React.FC = () => {
       <div className="auth-card">
         <div className="auth-header">
           <Link to="/" className="auth-logo">
-            <span className="logo-icon">💪</span>
-            <h1>FitLife</h1>
+            <img src="/logo.png" className="logo-icon" alt="Wellness Buddy Logo" />
+            <h1>Wellness Buddy</h1>
           </Link>
           <h2>Welcome Back</h2>
           <p>Sign in to your account to continue your journey</p>

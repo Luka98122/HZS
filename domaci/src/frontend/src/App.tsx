@@ -64,8 +64,8 @@ const App: React.FC = () => {
       <header className="header">
         <div className="container">
           <div className="logo">
-            <span className="logo-icon">💪</span>
-            <h1>FitLife</h1>
+            <img src="/logo.png" className="logo-icon" alt="Wellness Buddy Logo" />
+            <h1>Wellness Buddy</h1>
           </div>
           <nav className="nav">
             <ul>
@@ -101,10 +101,10 @@ const App: React.FC = () => {
         <section className="hero">
           <div className="container">
             <div className="hero-content">
-              <h2 className="hero-title">Unlock Your <span className="highlight">Best Self</span></h2>
+              <h2 className="hero-title">Your Partner in <span className="highlight">Wellbeing</span></h2>
               <p className="hero-subtitle">
-                Your all-in-one companion for fitness, wellness, and nutrition.
-                Track your progress, join challenges, and reach your goals.
+                Your all-in-one buddy for mental and physical health, and work-life balance.
+                Track your progress, find your center, and reach your goals.
               </p>
               <div className="hero-buttons">
                 <a href="#start" className="btn btn-primary">Start Your Journey</a>
@@ -196,17 +196,17 @@ const App: React.FC = () => {
 
         <section id="features" className="features">
           <div className="container">
-            <h2 className="section-title">Why <span className="highlight">FitLife</span>?</h2>
+            <h2 className="section-title">Why <span className="highlight">Wellness Buddy</span>?</h2>
             <div className="features-grid">
               <div className="feature-card">
                 <div className="feature-icon">📊</div>
-                <h3>Smart Tracking</h3>
-                <p>Automatically log your runs, lifts, and meals with our intuitive tracking system.</p>
+                <h3>Holistic Tracking</h3>
+                <p>Track your movement, nutrition, and mental clarity with our intuitive system.</p>
               </div>
               <div className="feature-card">
                 <div className="feature-icon">🧠</div>
-                <h3>Personalized Plans</h3>
-                <p>AI-driven workout schedules and nutrition plans tailored specifically to your body and goals.</p>
+                <h3>Personalized Balance</h3>
+                <p>Plans for fitness, mindfulness, and work-life harmony tailored for you.</p>
               </div>
               <div className="feature-card">
                 <div className="feature-icon">🏆</div>
@@ -290,9 +290,9 @@ const App: React.FC = () => {
         <div className="container">
           <div className="footer-content">
             <div className="footer-logo">
-              <span className="logo-icon">💪</span>
-              <h2>FitLife</h2>
-              <p className="footer-tagline">Empowering you to live a healthier active life.</p>
+              <img src="/logo.png" className="logo-icon" alt="Wellness Buddy Logo" />
+              <h2>Wellness Buddy</h2>
+              <p className="footer-tagline">Your partner for mental and physical wellbeing.</p>
             </div>
             <div className="footer-links">
               <div className="link-column">
@@ -316,7 +316,7 @@ const App: React.FC = () => {
             </div>
           </div>
           <div className="footer-bottom">
-            <p>© 2026 FitLife Inc. All rights reserved.</p>
+            <p>© 2026 Wellness Buddy Inc. All rights reserved.</p>
           </div>
         </div>
       </footer>

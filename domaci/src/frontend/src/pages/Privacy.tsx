@@ -9,8 +9,8 @@ const Privacy: React.FC = () => {
                 <div className="container">
                     <div className="logo">
                         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', textDecoration: 'none', color: 'inherit' }}>
-                            <span className="logo-icon">💪</span>
-                            <h1>FitLife</h1>
+                            <img src="/logo.png" className="logo-icon" alt="Wellness Buddy Logo" />
+                            <h1>Wellness Buddy</h1>
                         </Link>
                     </div>
                     <nav className="nav">
@@ -41,7 +41,7 @@ const Privacy: React.FC = () => {
                             <br />
 
                             <h3>2. Use of Data</h3>
-                            <p>FitLife uses the collected data for various purposes:</p>
+                            <p>Wellness Buddy uses the collected data for various purposes:</p>
                             <ul>
                                 <li>To provide and maintain the Service</li>
                                 <li>To notify you about changes to our Service</li>
@@ -66,7 +66,7 @@ const Privacy: React.FC = () => {
                             <p>We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page. We will let you know via email and/or a prominent notice on our Service, prior to the change becoming effective and update the "effective date" at the top of this Privacy Policy.</p>
 
                             <h3>7. Contact Us</h3>
-                            <p>If you have any questions about this Privacy Policy, please contact us at support@fitlife.com.</p>
+                            <p>If you have any questions about this Privacy Policy, please contact us at support@wellnessbuddy.com.</p>
                         </div>
                     </div>
                 </section>
@@ -75,7 +75,7 @@ const Privacy: React.FC = () => {
             <footer className="footer">
                 <div className="container">
                     <div className="footer-bottom">
-                        <p>© 2026 FitLife Inc. All rights reserved.</p>
+                        <p>© 2026 Wellness Buddy Inc. All rights reserved.</p>
                     </div>
                 </div>
             </footer>

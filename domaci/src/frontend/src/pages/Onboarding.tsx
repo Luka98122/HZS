@@ -17,7 +17,7 @@ const Onboarding: React.FC = () => {
                 {step === 1 && (
                     <div className="step-content">
                         <span className="welcome-icon">👋</span>
-                        <h2>Welcome to FitLife</h2>
+                        <h2>Welcome to Wellness Buddy</h2>
                         <p>Let's personalize your experience. What is your primary goal?</p>
                         <button className="btn btn-primary" onClick={() => setStep(2)}>Get Started</button>
                     </div>

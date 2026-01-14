@@ -42,7 +42,8 @@
 }
 
 .auth-logo .logo-icon {
-  font-size: clamp(24px, 4vw, 36px);
+  height: clamp(32px, 5vw, 48px);
+  width: auto;
 }
 
 .auth-logo h1 {

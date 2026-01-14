@@ -177,10 +177,10 @@ const Register: React.FC = () => {
       <div className="auth-card">
         <div className="auth-header">
           <Link to="/" className="auth-logo">
-            <span className="logo-icon">💪</span>
-            <h1>FitLife</h1>
+            <img src="/logo.png" className="logo-icon" alt="Wellness Buddy Logo" />
+            <h1>Wellness Buddy</h1>
           </Link>
-          <h2>Join FitLife</h2>
+          <h2>Join Wellness Buddy</h2>
           <p>Create your account to start your journey</p>
         </div>
 

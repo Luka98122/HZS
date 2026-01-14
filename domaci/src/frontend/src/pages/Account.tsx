@@ -146,8 +146,8 @@ const Account: React.FC = () => {
             <div className="auth-card">
                 <div className="auth-header">
                     <Link to="/" className="auth-logo">
-                        <span className="logo-icon">💪</span>
-                        <h1>FitLife</h1>
+                        <img src="/logo.png" className="logo-icon" alt="Wellness Buddy Logo" />
+                        <h1>Wellness Buddy</h1>
                     </Link>
                     <h2>Manage Account</h2>
                     {user && <p style={{ textAlign: 'center', color: '#666' }}>Welcome, {user.username}</p>}
