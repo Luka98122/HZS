@@ -1,11 +1,7 @@
 #!/bin/bash
-
 set -e
-
 echo "🚀 Building and starting frontend + backend"
-
 BASE_DIR="$(cd "$(dirname "$0")" && pwd)"
-
 FRONTEND_DIR="$BASE_DIR/frontend"
 BACKEND_DIR="$BASE_DIR/backend"
 FRONTEND_TARGET="/var/www/reactapp"
@@ -28,14 +24,35 @@ sudo chown -R www-data:www-data "$FRONTEND_TARGET"
 ############################
 # BACKEND (Flask)
 ############################
-echo "🐍 Starting Flask backend..."
-
+echo "🐍 Setting up Flask backend..."
 cd "$BACKEND_DIR"
+
+# Create venv if it doesn't exist
+if [ ! -d "venv" ]; then
+    echo "Creating virtual environment..."
+    python3 -m venv venv
+fi
+
+# Activate venv and install dependencies
+echo "Installing dependencies..."
+source venv/bin/activate
+pip install -r requirements.txt
+
+# Check for .env file
+if [ ! -f ".env" ]; then
+    echo "❌ ERROR: .env file not found in backend directory"
+    exit 1
+fi
+
+# Set production environment
+export ENV=production
 
 # Stop previous server if running
 pkill -f "python3 server.py" || true
 
-nohup python3 server.py > backend.log 2>&1 &
+# Start server with venv python
+echo "Starting Flask server..."
+nohup venv/bin/python server.py > backend.log 2>&1 &
 
 echo "✅ Flask started on port 5050"
 
