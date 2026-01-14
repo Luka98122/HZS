@@ -1,1 +1,6 @@
 flask
+flask-cors
+sqlmodel
+pymysql
+python-dotenv
+cryptography
