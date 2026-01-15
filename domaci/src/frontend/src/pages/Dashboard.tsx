@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import './Dashboard.css';
+import { Link, useNavigate } from 'react-router-dom';
 
 interface DashboardStats {
   workouts_this_week: number;
@@ -9,6 +10,12 @@ interface DashboardStats {
   water_avg_7days: number;
   focus_sessions_this_week: number;
   total_calories_burned_week: number;
+}
+
+interface User {
+    full_name: string;
+    email: string;
+    username: string;
 }
 
 interface AccountData {
@@ -143,6 +150,9 @@ const Dashboard: React.FC = () => {
   const [greeting, setGreeting] = useState<string>('Hello');
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
+  const [user, setUser] = useState<User | null>(null);
+  const navigate = useNavigate();
+
   /**
    * Coerce unknown API values into safe numbers.
    * Handles numbers, numeric strings, null/undefined, and other junk safely.
@@ -172,6 +182,20 @@ const Dashboard: React.FC = () => {
     focus_sessions_this_week: toNumber(data?.focus_sessions_this_week, 0),
     total_calories_burned_week: toNumber(data?.total_calories_burned_week, 0),
   });
+
+  useEffect(() => {
+        const storedUser = localStorage.getItem('user') || sessionStorage.getItem('user');
+
+        if (storedUser) {
+            try {
+                const parsedUser = JSON.parse(storedUser);
+                setUser(parsedUser);
+            } catch (error) {
+                console.error("Failed to parse user data", error);
+            }
+        }
+    }, [navigate]);
+
 
   const apiFetch = async <T,>(path: string, options: RequestInit = {}): Promise<T> => {
     const res = await fetch(`${API_BASE}${path}`, {
@@ -261,8 +285,7 @@ const Dashboard: React.FC = () => {
   const displayName = useMemo(() => {
     const full = account?.full_name?.trim();
     if (full) return full;
-    const user = account?.username?.trim();
-    if (user) return user;
+    if (user) return user.full_name;
     return 'there';
   }, [account]);
 
