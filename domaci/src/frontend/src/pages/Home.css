@@ -54,7 +54,7 @@
 
 .action-card:hover {
     transform: translateY(-5px);
-    border-color: var(--primary);
+    border-color: #007B5F;
     box-shadow: var(--shadow);
 }
 
