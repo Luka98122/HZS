@@ -70,7 +70,7 @@ p {
 }
 
 .highlight {
-  color: var(--primary);
+  color: #007B5F;
 }
 
 /* Header */
@@ -217,6 +217,7 @@ p {
   background-color: var(--primary-dark);
   transform: translateY(-2px);
   box-shadow: var(--shadow);
+  color: white;
 }
 
 .btn-secondary {
@@ -302,7 +303,6 @@ p {
   width: 3rem;
   height: 3rem;
   background-color: rgba(99, 102, 241, 0.1);
-  /* Primary color low opacity */
   color: var(--primary);
   border-radius: 1rem;
   display: flex;
@@ -334,7 +334,7 @@ p {
 .w-value {
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--secondary);
 }
 
 .w-value small {
@@ -618,7 +618,6 @@ p {
   .hero-buttons {
     flex-direction: column;
     align-items: center;
-    /* Changed from flex-start to center for better mobile look, if desired, or keep user preference? User didn't specify buttons, but stats. Let's stick to user request for stats. */
     align-items: flex-start;
   }
 
