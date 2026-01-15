@@ -9,6 +9,12 @@ import {
   Settings,
   FileText,
   ExternalLink,
+  Gauge ,
+  Dumbbell,
+  NotebookText ,
+  BookHeadphones ,
+  Wind ,
+  Brain ,
   type LucideIcon,
 } from "lucide-react";
 
@@ -52,15 +58,15 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({
   const defaultLinks: MenuLink[] = useMemo(
     () => [
       { label: "Home", path: "/home", icon: Home },
-      { label: "Dashboard", path: "/dashboard", icon: FileText },
+      { label: "Dashboard", path: "/dashboard", icon: Gauge  },
       { label: "Account", path: "/account", icon: User },
-      { label: "Workout", path: "/workout", icon: FileText },
-      { label: "Study", path: "/study", icon: FileText },
-      { label: "Focus", path: "/focus", icon: FileText },
-      { label: "Stress", path: "/stress", icon: FileText },
+      { label: "Workout", path: "/workout", icon: Dumbbell },
+      { label: "Study", path: "/study", icon: NotebookText  },
+      { label: "Focus", path: "/focus", icon: BookHeadphones  },
+      { label: "Stress", path: "/stress", icon: Brain   },
       // Add Settings only if you actually have /settings route:
       // { label: "Settings", path: "/settings", icon: Settings },
-      { label: "External", path: "https://example.com", icon: ExternalLink, external: true },
+      { label: "Landing", path: "https://react.hoi5.com", icon: Wind },
     ],
     []
   );
