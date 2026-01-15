@@ -1,46 +1,240 @@
+/* Workout.css */
+
 .workout-container {
-    padding: 6rem 2rem 2rem;
-    min-height: 100vh;
-    background-color: var(--bg-dark);
+  padding: 6rem 2rem 2rem;
+  min-height: 100vh;
+  background-color: var(--bg-dark);
 }
 
 .workout-hero {
-    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1920&q=80');
-    background-size: cover;
-    background-position: center;
-    padding: 4rem 2rem;
-    border-radius: 1.5rem;
-    margin-bottom: 2rem;
-    text-align: center;
+  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+    url("https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1920&q=80");
+  background-size: cover;
+  background-position: center;
+  padding: 4rem 2rem;
+  border-radius: 1.5rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
 }
 
 .workout-stats {
-    display: flex;
-    justify-content: center;
-    gap: 3rem;
-    margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+.workout-actions {
+  display: flex;
+  justify-content: center;
+}
+
+.active-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.session-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 0.85rem;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  color: #e2e8f0;
+  backdrop-filter: blur(6px);
+}
+
+.session-pill .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+}
+
+.muted {
+  opacity: 0.8;
+  font-size: 0.9rem;
+}
+
+.error-banner {
+  margin-top: 1.25rem;
+  display: inline-block;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  background: rgba(239, 68, 68, 0.18);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #fecaca;
+}
+
+.toast {
+  position: fixed;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  padding: 0.7rem 1rem;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  color: #e2e8f0;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
 }
 
 .exercise-list {
-    display: grid;
-    gap: 1rem;
+  display: grid;
+  gap: 1rem;
 }
 
 .exercise-item {
-    display: flex;
-    align-items: center;
-    background-color: var(--bg-card);
-    padding: 1rem;
-    border-radius: 0.75rem;
-    border-left: 4px solid var(--primary);
+  display: flex;
+  align-items: flex-start;
+  background-color: var(--bg-card);
+  padding: 1rem;
+  border-radius: 0.75rem;
+  border-left: 4px solid var(--primary);
+  gap: 0.5rem;
 }
 
 .exercise-info {
-    flex: 1;
-    margin-left: 1rem;
+  flex: 1;
+  margin-left: 1rem;
+  min-width: 0;
+}
+
+.exercise-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.tag {
+  padding: 0.5rem;
+  background: #334155;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  white-space: nowrap;
 }
 
 .exercise-meta {
-    font-size: 0.875rem;
-    color: var(--text-secondary);
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-top: 0.25rem;
+}
+
+.exercise-form {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+  gap: 0.75rem;
+  align-items: end;
+  margin-top: 1rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  text-align: left;
+}
+
+.field span {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.field input {
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.65rem;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  outline: none;
+  background: rgba(15, 23, 42, 0.45);
+  color: #e2e8f0;
+}
+
+.field input:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Read-only calorie field styling */
+.field input.readonly {
+  opacity: 0.9;
+  cursor: default;
+  border-style: dashed;
+}
+
+.logged-panel {
+  margin-top: 1rem;
+  padding: 0.85rem;
+  border-radius: 0.75rem;
+  background: rgba(15, 23, 42, 0.35);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+}
+
+.logged-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.logged-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.logged-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: 0.5rem;
+  background: rgba(2, 6, 23, 0.25);
+}
+
+.logged-main {
+  display: inline-flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .exercise-form {
+    grid-template-columns: 1fr 1fr;
+  }
+  .exercise-form .btn {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 520px) {
+  .exercise-item {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .exercise-info {
+    margin-left: 0;
+  }
+  .exercise-title-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .exercise-form {
+    grid-template-columns: 1fr;
+  }
 }

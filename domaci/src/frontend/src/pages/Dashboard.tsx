@@ -717,7 +717,7 @@ const Dashboard: React.FC = () => {
           </div>
           <div className="mood-text">{getMoodText(avgMood10)}</div>
           <div className="focus-sessions">
-            <span className="focus-label">Focus Sessions:</span>
+            <span className="focus-label">Wellness Sessions:</span>
             <span className="focus-count">{focusSessions}</span>
           </div>
 
