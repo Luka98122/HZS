@@ -114,7 +114,7 @@ const Register: React.FC = () => {
 
       // Redirect to home after 2 seconds
       setTimeout(() => {
-        navigate('/');
+        navigate('/onboarding');
       }, 2000);
 
     } catch (err) {

@@ -121,6 +121,22 @@ type ActivityItem = {
   sortTime: number; // ms epoch for sorting
 };
 
+interface GoalsResponse {
+  water_per_day_glasses?: number;
+  calories_per_week?: number;       // if you store it
+  workouts_per_week?: number;      // if you store it
+  study_hours_per_week?: number;   // if you store it
+  calories_burn_goal_week?: number; // optional if you return it directly
+  water_goal_glasses?: number;      // optional alias
+}
+
+type GoalsNormalized = {
+  waterPerDay: number;       // glasses
+  caloriesBurnWeek: number;  // kcal (target burn/week)
+  studyHoursWeek: number;    // hours
+};
+
+
 const Dashboard: React.FC = () => {
   const API_BASE = 'https://hak.hoi5.com/api';
 
@@ -152,6 +168,13 @@ const Dashboard: React.FC = () => {
 
   const [user, setUser] = useState<User | null>(null);
   const navigate = useNavigate();
+
+  const [goals, setGoals] = useState<GoalsNormalized>({
+    waterPerDay: 8,
+    caloriesBurnWeek: 5000,
+    studyHoursWeek: 20,
+  });
+
 
   /**
    * Coerce unknown API values into safe numbers.
@@ -315,6 +338,7 @@ const Dashboard: React.FC = () => {
         focusHistRes,
         gratitudeRes,
         journalRes,
+        goalsRes,
       ] = await Promise.allSettled([
         apiFetch<WaterTodayResponse>('/water/today'),
         apiFetch<any>('/water/week'),
@@ -327,6 +351,7 @@ const Dashboard: React.FC = () => {
         apiFetch<any>('/focus/history'),
         apiFetch<any>('/gratitude/recent'),
         apiFetch<any>('/journal/recent'),
+        apiFetch<GoalsResponse>('/goals'),
       ]);
 
       // Water today
@@ -467,6 +492,35 @@ const Dashboard: React.FC = () => {
         setJournalRecent(normalized);
       } else {
         setJournalRecent([]);
+      }
+
+      // Goals
+      if (goalsRes.status === 'fulfilled') {
+        const g = goalsRes.value;
+
+        // water goal
+        const waterPerDay = toNumber(
+          g?.water_per_day_glasses ?? g?.water_goal_glasses,
+          8
+        );
+
+        // Study weekly goal (optional, fallback to 20)
+        const studyHoursWeek = toNumber(g?.study_hours_per_week, 20);
+
+        // Calories burned goal: if backend only stores calories/day, we can infer a week goal
+        // Otherwise, if you return calories_burn_goal_week directly, use it.
+        const caloriesBurnWeek =
+          toNumber(g?.calories_burn_goal_week, 0) ||
+          (toNumber(g?.calories_per_week, 0) > 0 ? toNumber(g.calories_per_week, 0) : 400);
+
+        setGoals({
+          waterPerDay,
+          caloriesBurnWeek,
+          studyHoursWeek,
+        });
+      } else {
+        // Keep defaults
+        setGoals({ waterPerDay: 8, caloriesBurnWeek: 400, studyHoursWeek: 20 });
       }
 
       setError(null);
@@ -682,12 +736,12 @@ const Dashboard: React.FC = () => {
           <div className="progress-bar">
             <div
               className="progress-fill fitness"
-              style={{ width: `${calculateProgress(caloriesWeek, 5000)}%` }}
+              style={{ width: `${calculateProgress(caloriesWeek, goals.caloriesBurnWeek)}%` }}
             ></div>
           </div>
           <div className="progress-label">
             <span>Goal: 5,000 kcal</span>
-            <span>{calculateProgress(caloriesWeek, 5000).toFixed(0)}%</span>
+            <span>{calculateProgress(caloriesWeek, goals.caloriesBurnWeek).toFixed(0)}%</span>
           </div>
         </div>
 
@@ -712,12 +766,12 @@ const Dashboard: React.FC = () => {
           <div className="progress-bar">
             <div
               className="progress-fill study"
-              style={{ width: `${calculateProgress(studyHours, 20)}%` }}
+              style={{ width: `${calculateProgress(studyHours, goals.studyHoursWeek)}%` }}
             ></div>
           </div>
           <div className="progress-label">
             <span>Goal: 20 hours</span>
-            <span>{calculateProgress(studyHours, 20).toFixed(0)}%</span>
+            <span>{calculateProgress(studyHours, goals.studyHoursWeek).toFixed(0)}%</span>
           </div>
 
           <div style={{ marginTop: '0.75rem' }}>
@@ -765,11 +819,11 @@ const Dashboard: React.FC = () => {
           </div>
 
           <div className="stat-subtext" style={{ marginBottom: '0.5rem' }}>
-            Today: <strong>{waterToday}</strong> / 8 glasses
+            Today: <strong>{waterToday}</strong> / {goals.waterPerDay} glasses
           </div>
 
           <div className="water-cups">
-            {[...Array(8)].map((_, i) => (
+            {[...Array(goals.waterPerDay)].map((_, i) => (
               <div key={i} className={`water-cup ${i < Math.floor(waterToday) ? 'filled' : ''}`}>
                 💧
               </div>
@@ -779,12 +833,12 @@ const Dashboard: React.FC = () => {
           <div className="progress-bar">
             <div
               className="progress-fill water"
-              style={{ width: `${calculateProgress(waterToday, 8)}%` }}
+              style={{ width: `${calculateProgress(waterToday, goals.waterPerDay)}%` }}
             ></div>
           </div>
           <div className="progress-label">
-            <span>Goal: 8 glasses</span>
-            <span>{calculateProgress(waterToday, 8).toFixed(0)}%</span>
+            <span>Goal: {goals.waterPerDay} glasses</span>
+            <span>{calculateProgress(waterToday, goals.waterPerDay).toFixed(0)}%</span>
           </div>
 
           {waterWeek.length > 0 && (

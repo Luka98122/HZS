@@ -259,7 +259,7 @@ const App: React.FC = () => {
               <div className="team-member">
                 <div className="member-avatar">LM</div>
                 <h3>Luka Marković</h3>
-                <p>Frontend dev</p>
+                <p>Fullstack dev</p>
               </div>
               <div className="team-member">
                 <div className="member-avatar">MM</div>
@@ -275,8 +275,7 @@ const App: React.FC = () => {
             <div className="cta-content">
               <h2 className="cta-title">Ready to Transform Your Life?</h2>
               <p className="cta-subtitle">Join thousands of others on their journey to better health.</p>
-              <a href="#register" className="btn btn-primary btn-large">Start Free Trial</a>
-              <p className="cta-note">No credit card required for 7 days • Cancel anytime</p>
+              <a href="#register" className="btn btn-primary btn-large">JOIN NOW</a>
             </div>
           </div>
         </section>

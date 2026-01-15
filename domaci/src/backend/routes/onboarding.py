@@ -76,6 +76,27 @@ def submit_onboarding():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@onboarding_bp.route("/goals", methods=["GET"])
+def get_goals():
+    user = get_user_from_session()
+    if not user or not user.id:
+        return jsonify({"error": "Unauthorized"}), 401
+
+    with Session(engine) as session:
+        onboarding = session.exec(
+            select(OnboardingData).where(OnboardingData.user_id == user.id)
+        ).first()
+
+        if not onboarding:
+            return jsonify({"error": "No onboarding data found"}), 404
+        
+        pg = onboarding.physical_goals or {}
+        return jsonify({
+            "water_per_day_glasses": pg.get("water_per_day", 0),
+            "calories_per_week": pg.get("calories_burn_per_week", 0),
+            "study_hours_per_week": pg.get("study_hours_per_week", 0),
+            "completed_at": onboarding.completed_at.isoformat()
+        }), 200
 
 @onboarding_bp.route("/onboarding", methods=["GET"])
 def get_onboarding():
@@ -108,3 +129,4 @@ def get_onboarding():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
