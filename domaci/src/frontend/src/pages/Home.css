@@ -45,7 +45,7 @@
     cursor: pointer;
     transition: var(--transition);
     text-decoration: none;
-    color: #007B5F;
+    color: var(--text-primary);
     display: flex;
     flex-direction: column;
     align-items: center;
