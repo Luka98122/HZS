@@ -41,7 +41,7 @@ const Home: React.FC = () => {
 
             <p className="home-question">What should we work on today?</p>
 
-            <div className="home-actions">
+           <div className="home-actions">
                 <Link to="/workout" className="action-card">
                     <span className="action-icon">💪</span>
                     <span className="action-title">Workout</span>
@@ -61,7 +61,13 @@ const Home: React.FC = () => {
                     <span className="action-icon">🌬️</span>
                     <span className="action-title">De-Stress</span>
                 </Link>
+
+                <Link to="/hydration" className="action-card">
+                    <span className="action-icon">💧</span>
+                    <span className="action-title">Hydration</span>
+                </Link>
             </div>
+
 
             <Link to="/dashboard" className="btn btn-secondary" style={{ marginTop: '3rem' }}>
                 Go to Dashboard

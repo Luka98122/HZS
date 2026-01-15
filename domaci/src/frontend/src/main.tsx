@@ -14,6 +14,7 @@ import Workout from './pages/Workout.tsx'
 import Study from './pages/Study.tsx'
 import Focus from './pages/Focus.tsx'
 import Stress from './pages/Stress.tsx'
+import Hydration from './pages/Hydration.tsx'
 import Home from './pages/Home.tsx'
 import ScrollToTop from "./utils/ScrollToTop";
 import SidebarMenu from './utils/SidebarMenu';
@@ -37,6 +38,7 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/study" element={<Study />} />
         <Route path="/focus" element={<Focus />} />
         <Route path="/stress" element={<Stress />} />
+        <Route path="/hydration" element={<Hydration />} />
       </Routes>
     </Router>
   </StrictMode>,
