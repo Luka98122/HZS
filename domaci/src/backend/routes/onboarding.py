@@ -3,6 +3,7 @@ from flask import Blueprint, jsonify, request
 from models import OnboardingData, engine
 from routes.auth import get_user_from_session
 from sqlmodel import Session, select
+import sys
 
 onboarding_bp = Blueprint('onboarding', __name__)
 
@@ -91,11 +92,14 @@ def get_goals():
             return jsonify({"error": "No onboarding data found"}), 404
         
         pg = onboarding.physical_goals or {}
+        sg = onboarding.study_goals or {}
+
+        
         return jsonify({
-            "water_per_day_glasses": pg.get("water_per_day", 0),
+            "water_per_day_glasses": pg.get("water_glasses_per_day", 0),
             "calories_per_week": pg.get("calories_burn_per_week", 0),
-            "study_hours_per_week": pg.get("study_hours_per_week", 0),
-            "completed_at": onboarding.completed_at.isoformat()
+            "study_hours_per_week": sg.get("study_hours_per_week", 0),
+            "completed_at": onboarding.completed_at.isoformat(),
         }), 200
 
 @onboarding_bp.route("/onboarding", methods=["GET"])

@@ -500,7 +500,7 @@ const Dashboard: React.FC = () => {
 
         // water goal
         const waterPerDay = toNumber(
-          g?.water_per_day_glasses ?? g?.water_goal_glasses,
+          g?.water_per_day_glasses ?? g?.water_per_day_glasses,
           8
         );
 
@@ -510,9 +510,11 @@ const Dashboard: React.FC = () => {
         // Calories burned goal: if backend only stores calories/day, we can infer a week goal
         // Otherwise, if you return calories_burn_goal_week directly, use it.
         const caloriesBurnWeek =
-          toNumber(g?.calories_burn_goal_week, 0) ||
           (toNumber(g?.calories_per_week, 0) > 0 ? toNumber(g.calories_per_week, 0) : 400);
-
+        console.log(waterPerDay);
+        console.log(caloriesBurnWeek);
+        console.log(studyHoursWeek);
+        console.log(g);
         setGoals({
           waterPerDay,
           caloriesBurnWeek,
@@ -722,7 +724,7 @@ const Dashboard: React.FC = () => {
 
       <div className="dashboard-grid">
         {/* Fitness Card */}
-        <div className="dashboard-card">
+        <div className="dashboard-card" onClick={() => window.location.href="/workout"}>
           <div className="card-header">
             <h3>Fitness</h3>
             <span className="card-icon">🔥</span>
@@ -746,7 +748,7 @@ const Dashboard: React.FC = () => {
         </div>
 
         {/* Study Card */}
-        <div className="dashboard-card">
+        <div className="dashboard-card" onClick={() => window.location.href="/study"}>
           <div className="card-header">
             <h3>Study</h3>
             <span className="card-icon">📚</span>
@@ -782,7 +784,7 @@ const Dashboard: React.FC = () => {
         </div>
 
         {/* Wellness Card */}
-        <div className="dashboard-card">
+        <div className="dashboard-card" onClick={() => window.location.href="/stress"}>
           <div className="card-header">
             <h3>Wellness</h3>
             <span className="card-icon">🧘</span>
@@ -807,7 +809,7 @@ const Dashboard: React.FC = () => {
         </div>
 
         {/* Water Card */}
-        <div className="dashboard-card">
+        <div className="dashboard-card" onClick={() => window.location.href="/hydration"}>
           <div className="card-header">
             <h3>Hydration</h3>
             <span className="card-icon">💧</span>

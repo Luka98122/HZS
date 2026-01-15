@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from flask import Flask, jsonify
 from flask_cors import CORS
 from models import init_db
+import sys
 
 # Import all blueprints
 from routes.auth import auth_bp
