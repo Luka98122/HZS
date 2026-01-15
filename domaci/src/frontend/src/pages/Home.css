@@ -13,6 +13,7 @@
     font-size: 3rem;
     font-weight: 700;
     margin-bottom: 2rem;
+    margin-top: 2rem;
     background: linear-gradient(135deg, var(--primary), var(--secondary));
     -webkit-background-clip: text;
     background-clip: text;
