@@ -59,6 +59,10 @@
     color: #007B5F;
 }
 
+.btn-secondary:hover {
+    color: #007B5F;
+}
+
 .action-icon {
     font-size: 3rem;
 }

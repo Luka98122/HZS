@@ -259,6 +259,10 @@
   background-color: rgba(239, 68, 68, 0.08);
 }
 
+.btn-secondary:hover {
+    color: #007B5F;
+}
+
 @media (max-width: 900px) {
   .hydration-grid {
     grid-template-columns: 1fr;

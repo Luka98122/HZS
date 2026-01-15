@@ -197,22 +197,22 @@ const App: React.FC = () => {
               <div className="feature-card">
                 <div className="feature-icon">📊</div>
                 <h3>Holistic Tracking</h3>
-                <p>Track your movement, nutrition, and mental clarity with our intuitive system.</p>
+                <p>Track your movement, mood and mental clarity with our intuitive system.</p>
               </div>
               <div className="feature-card">
                 <div className="feature-icon">🧠</div>
                 <h3>Personalized Balance</h3>
-                <p>Plans for fitness, mindfulness, and work-life harmony tailored for you.</p>
+                <p>Plans for fitness, mindfulness and work-life harmony tailored for you.</p>
               </div>
               <div className="feature-card">
                 <div className="feature-icon">🏆</div>
-                <h3>Community Challenges</h3>
-                <p>Compete with friends, join global leaderboards, and stay motivated together.</p>
+                <h3>Personal Challenges</h3>
+                <p>Set up and complete your goals on weekly and monthly basis.</p>
               </div>
               <div className="feature-card">
                 <div className="feature-icon">🥗</div>
                 <h3>Expert Guidance</h3>
-                <p>Access tips, recipes, and video guides from certified coaches and nutritionists.</p>
+                <p>Access tips and video guides from certified coaches and nutritionists.</p>
               </div>
             </div>
           </div>
@@ -230,7 +230,7 @@ const App: React.FC = () => {
               <div className="step">
                 <div className="step-number">2</div>
                 <h3>Follow the Plan</h3>
-                <p>Receive your daily workout and meal plan, customized just for you.</p>
+                <p>Receive your daily workout and wellness plan, customized just for you.</p>
               </div>
               <div className="step">
                 <div className="step-number">3</div>
@@ -244,7 +244,7 @@ const App: React.FC = () => {
         <section id="trainers" className="team">
           <div className="container">
             <h2 className="section-title">Meet the<span className="highlight">Developers</span></h2>
-            <p className="section-subtitle">Expert trainers dedicated to your success</p>
+            <p className="section-subtitle">Expert team dedicated to your success</p>
             <div className="team-grid">
               <div className="team-member">
                 <div className="member-avatar">AV</div>

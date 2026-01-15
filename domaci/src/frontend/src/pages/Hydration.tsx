@@ -60,8 +60,6 @@ const Hydration: React.FC = () => {
 
     const data = await res.json();
 
-    // Expecting: { glasses: number } OR plain number OR { count: number } depending on backend.
-    // We'll handle a few common shapes safely.
     const glasses =
       typeof data === "number"
         ? data
@@ -296,7 +294,7 @@ const Hydration: React.FC = () => {
               )}
 
               <p className="hydration-footnote">
-                Tip: Aim for steady intake throughout the day—especially around workouts.
+                Tip: Aim for steady intake throughout the day — especially around workouts.
               </p>
             </div>
           </div>
