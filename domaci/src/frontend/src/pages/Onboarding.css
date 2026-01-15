@@ -1,71 +1,186 @@
 .onboarding-container {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--bg-dark);
-    padding: 2rem;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-dark);
+  padding: 2rem;
 }
 
 .onboarding-card {
-    background-color: var(--bg-card);
-    padding: 3rem;
-    border-radius: 1.5rem;
-    max-width: 600px;
-    width: 100%;
-    text-align: center;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--border-color);
-    animation: fadeIn 0.5s ease-out;
+  background-color: var(--bg-card);
+  padding: 3rem;
+  border-radius: 1.5rem;
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-color);
+  animation: fadeIn 0.5s ease-out;
 }
 
 .onboarding-steps {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    margin-bottom: 2rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
 }
 
 .step-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background-color: var(--border-color);
-    transition: var(--transition);
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: var(--border-color);
+  transition: var(--transition);
 }
 
 .step-dot.active {
-    background-color: var(--primary);
-    transform: scale(1.2);
+  background-color: var(--primary);
+  transform: scale(1.2);
 }
 
 .welcome-icon {
-    font-size: 4rem;
-    margin-bottom: 1.5rem;
-    display: inline-block;
-    animation: bounce 2s infinite;
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+  display: inline-block;
+  animation: bounce 2s infinite;
 }
 
+.step-content h2 {
+  margin-bottom: 0.75rem;
+}
+
+.step-content p {
+  margin: 0 auto;
+  max-width: 52ch;
+  line-height: 1.6;
+  opacity: 0.95;
+}
+
+/* Alerts */
+.alert {
+  border: 1px solid var(--border-color);
+  border-radius: 0.9rem;
+  padding: 0.9rem 1rem;
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+.alert-error {
+  border-color: rgba(255, 99, 99, 0.5);
+}
+
+.alert-info {
+  border-color: rgba(100, 160, 255, 0.45);
+}
+
+/* Form */
+.form-grid {
+  margin-top: 2rem;
+  display: grid;
+  gap: 1.25rem;
+  text-align: left;
+}
+
+.field {
+  display: grid;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-color);
+  border-radius: 1rem;
+  padding: 1rem;
+}
+
+.field-label {
+  font-weight: 600;
+}
+
+.field-control {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.input {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border-radius: 0.85rem;
+  border: 1px solid var(--border-color);
+  background-color: rgba(0, 0, 0, 0.15);
+  color: inherit;
+  outline: none;
+  transition: var(--transition);
+}
+
+.input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(100, 108, 255, 0.18);
+}
+
+.field-suffix {
+  white-space: nowrap;
+  opacity: 0.85;
+  font-size: 0.95rem;
+}
+
+.field-hint {
+  font-size: 0.9rem;
+  opacity: 0.75;
+}
+
+/* Buttons row */
+.btn-row {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Summary */
+.summary {
+  margin-top: 1rem;
+  line-height: 1.7;
+}
+
+.recommendations {
+  margin-top: 1.25rem;
+  text-align: left;
+  border: 1px solid var(--border-color);
+  border-radius: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.recommendations h3 {
+  margin: 0 0 0.5rem 0;
+}
+
+/* Animations */
 @keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
 
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(-10px);
-    }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
