@@ -248,22 +248,22 @@ const App: React.FC = () => {
             <div className="team-grid">
               <div className="team-member">
                 <div className="member-avatar">AM</div>
-                <h3>Alex Morgan</h3>
+                <h3>Luka Markovic</h3>
                 <p>HIIT Specialist</p>
               </div>
               <div className="team-member">
                 <div className="member-avatar">SJ</div>
-                <h3>Sam Jordan</h3>
+                <h3>Petar Tolimir</h3>
                 <p>Yoga & Mindfulness</p>
               </div>
               <div className="team-member">
                 <div className="member-avatar">KR</div>
-                <h3>Kai Rivera</h3>
+                <h3>Aleksandar Vasilic</h3>
                 <p>Strength Coach</p>
               </div>
               <div className="team-member">
                 <div className="member-avatar">JT</div>
-                <h3>Jordan Taylor</h3>
+                <h3>Marko Mitic</h3>
                 <p>Nutritionist</p>
               </div>
             </div>
