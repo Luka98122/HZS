@@ -204,7 +204,6 @@ const Register: React.FC = () => {
             <input
               type="text"
               id="name"
-              value={formData.name}
               onChange={handleChange}
               placeholder="John Doe"
               className={errors.name ? 'error' : ''}
@@ -218,11 +217,12 @@ const Register: React.FC = () => {
             <input
               type="text"
               id="username"
-              value={formData.username}
+              autoComplete='new-password'
               onChange={handleChange}
               placeholder="@username"
               className={errors.username ? 'error' : ''}
               disabled={isLoading}
+              
             />
             {errors.username && <span className="error-message">{errors.username}</span>}
           </div>
@@ -232,7 +232,7 @@ const Register: React.FC = () => {
             <input
               type="email"
               id="email"
-              value={formData.email}
+              autoComplete="new-password"
               onChange={handleChange}
               placeholder="user@example.com"
               className={errors.email ? 'error' : ''}
@@ -247,7 +247,7 @@ const Register: React.FC = () => {
               <input
                 type="password"
                 id="password"
-                value={formData.password}
+                autoComplete="new-password"
                 onChange={handleChange}
                 placeholder="••••••••"
                 className={errors.password ? 'error' : ''}
@@ -277,7 +277,7 @@ const Register: React.FC = () => {
               <input
                 type="password"
                 id="confirmPassword"
-                value={formData.confirmPassword}
+                autoComplete="new-password"
                 onChange={handleChange}
                 placeholder="••••••••"
                 className={errors.confirmPassword ? 'error' : ''}

@@ -140,6 +140,7 @@ const Login: React.FC = () => {
               type="email"
               id="email"
               value={email}
+              autoComplete='username'
               onChange={(e) => setEmail(e.target.value)}
               placeholder="user@example.com"
               required

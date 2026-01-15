@@ -121,35 +121,7 @@ const App: React.FC = () => {
                   <span className="stat-number">98%</span>
                   <span className="stat-label">Goal Success</span>
                 </div>
-                <div className="stat">
-                  <span className="stat-number">
-                    {apiStatus === 'checking' && '…'}
-                    {apiStatus === 'healthy' && '●'}
-                    {apiStatus === 'unhealthy' && '●'}
-                  </span>
-                  <span className="stat-label">
-                    System Status:{' '}
-                    <strong
-                      style={{
-                        color:
-                          apiStatus === 'healthy'
-                            ? '#2ecc71'
-                            : apiStatus === 'unhealthy'
-                              ? '#e74c3c'
-                              : '#f1c40f',
-                      }}
-                    >
-                      {apiStatus}
-                    </strong>
-                    <br />
-                    {apiMessage && (
-                      <>
-                        <br />
-                        <small>{apiMessage}</small>
-                      </>
-                    )}
-                  </span>
-                </div>
+                
 
               </div>
             </div>
@@ -275,7 +247,7 @@ const App: React.FC = () => {
             <div className="cta-content">
               <h2 className="cta-title">Ready to Transform Your Life?</h2>
               <p className="cta-subtitle">Join thousands of others on their journey to better health.</p>
-              <a href="#register" className="btn btn-primary btn-large">JOIN NOW</a>
+              <a href="register" className="btn btn-primary btn-large">JOIN NOW</a>
             </div>
           </div>
         </section>
