@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import './Dashboard.css';
 
 interface DashboardStats {
@@ -11,11 +11,137 @@ interface DashboardStats {
   total_calories_burned_week: number;
 }
 
+interface AccountData {
+  id?: number;
+  username?: string;
+  email?: string;
+  full_name?: string;
+}
+
+interface WaterTodayResponse {
+  glasses?: number;
+  total_glasses?: number;
+  count?: number;
+}
+
+interface WaterWeekEntry {
+  date: string; // YYYY-MM-DD
+  glasses: number;
+}
+
+interface MoodEntry {
+  id?: number;
+  mood_score: number; // API says 1-5, but UI historically shows /10; we convert below.
+  notes?: string;
+  created_at?: string;
+  date?: string;
+}
+
+interface StudyStreakResponse {
+  current_streak?: number;
+  longest_streak?: number;
+}
+
+interface StudyTask {
+  id: number;
+  task_name: string;
+  estimated_time?: number;
+  actual_time?: number;
+  completed?: boolean;
+  created_at?: string;
+}
+
+interface StudyTasksResponse {
+  pending?: StudyTask[];
+  completed?: StudyTask[];
+}
+
+interface StudyHistoryItem {
+  id?: number;
+  start_time?: string;
+  end_time?: string;
+  total_duration?: number; // seconds
+  distractions?: number;
+  pomodoros?: number;
+}
+
+interface WorkoutHistoryItem {
+  id?: number;
+  start_time?: string;
+  end_time?: string;
+  total_duration?: number; // seconds
+  total_calories_burned?: number;
+  exercises?: Array<{
+    id?: number;
+    exercise_type?: string;
+    reps?: number;
+    duration?: number;
+    calories_burned?: number;
+    completed_at?: string;
+  }>;
+}
+
+interface FocusHistoryItem {
+  id?: number;
+  session_type?: string;
+  duration?: number; // minutes or seconds depending on backend; we display raw if unsure
+  breathing_pattern?: string;
+  ambient_sound?: string;
+  completed_at?: string;
+  created_at?: string;
+}
+
+interface GratitudeEntry {
+  id?: number;
+  entry_text?: string;
+  date?: string;
+  created_at?: string;
+}
+
+interface JournalEntry {
+  id?: number;
+  entry_text?: string;
+  created_at?: string;
+}
+
+type ActivityItem = {
+  key: string;
+  icon: string;
+  title: string;
+  timeLabel: string;
+  rightLabel?: string;
+  rightClassName?: string;
+  sortTime: number; // ms epoch for sorting
+};
+
 const Dashboard: React.FC = () => {
+  const API_BASE = 'https://hak.hoi5.com/api';
+
   const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [account, setAccount] = useState<AccountData | null>(null);
+
+  const [waterToday, setWaterToday] = useState<number>(0);
+  const [waterWeek, setWaterWeek] = useState<WaterWeekEntry[]>([]);
+
+  const [moodRecent, setMoodRecent] = useState<MoodEntry[]>([]);
+  const [moodAverageWeek, setMoodAverageWeek] = useState<number>(0);
+
+  const [studyStreak, setStudyStreak] = useState<StudyStreakResponse | null>(null);
+  const [studyTasks, setStudyTasks] = useState<StudyTasksResponse | null>(null);
+  const [studyHistory, setStudyHistory] = useState<StudyHistoryItem[]>([]);
+
+  const [workoutHistory, setWorkoutHistory] = useState<WorkoutHistoryItem[]>([]);
+  const [focusHistory, setFocusHistory] = useState<FocusHistoryItem[]>([]);
+
+  const [gratitudeRecent, setGratitudeRecent] = useState<GratitudeEntry[]>([]);
+  const [journalRecent, setJournalRecent] = useState<JournalEntry[]>([]);
+
   const [loading, setLoading] = useState<boolean>(true);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+
   const [greeting, setGreeting] = useState<string>('Hello');
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
   /**
    * Coerce unknown API values into safe numbers.
@@ -33,92 +159,452 @@ const Dashboard: React.FC = () => {
   };
 
   /**
-   * Normalize API response into the exact numeric shape the UI expects.
-   * This prevents runtime errors like: toFixed is not a function
+   * Normalize /stats/overview response into the exact numeric shape the UI expects.
    */
   const normalizeStats = (data: any): DashboardStats => ({
     workouts_this_week: toNumber(data?.workouts_this_week, 0),
     study_hours_this_week: toNumber(data?.study_hours_this_week, 0),
     current_study_streak: toNumber(data?.current_study_streak, 0),
-    avg_mood_7days: toNumber(data?.avg_mood_7days, 5),
+    // backend is 1-5 for mood; overview route currently returns avg as-is
+    // we’ll keep this value but convert to /10 when displaying to preserve existing UI.
+    avg_mood_7days: toNumber(data?.avg_mood_7days, 0),
     water_avg_7days: toNumber(data?.water_avg_7days, 0),
     focus_sessions_this_week: toNumber(data?.focus_sessions_this_week, 0),
     total_calories_burned_week: toNumber(data?.total_calories_burned_week, 0),
   });
 
-  useEffect(() => {
-    const currentHour = new Date().getHours();
-    if (currentHour < 12) {
-      setGreeting('Good morning');
-    } else if (currentHour < 18) {
-      setGreeting('Good afternoon');
-    } else {
-      setGreeting('Good evening');
-    }
+  const apiFetch = async <T,>(path: string, options: RequestInit = {}): Promise<T> => {
+    const res = await fetch(`${API_BASE}${path}`, {
+      ...options,
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(options.headers || {}),
+      },
+    });
 
-    fetchStats();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const fetchStats = async () => {
-    try {
-      setLoading(true);
-
-      const response = await fetch('https://hak.hoi5.com/api/stats/overview', {
-        method: 'GET',
-        credentials: 'include', // Important for sending session cookies
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        if (response.status === 401) {
-          throw new Error('Please log in to view dashboard');
-        }
-        throw new Error(`Error: ${response.status}`);
+    if (!res.ok) {
+      let message = `Error: ${res.status}`;
+      try {
+        const err = await res.json();
+        if (err?.error) message = err.error;
+      } catch {
+        // ignore
       }
-
-      const data = await response.json();
-
-      // Normalize to numbers so UI formatting/math never breaks
-      setStats(normalizeStats(data));
-      setError(null);
-    } catch (err: any) {
-      setError(err.message || 'Failed to load dashboard data');
-      console.error('Error fetching stats:', err);
-    } finally {
-      setLoading(false);
+      if (res.status === 401) message = 'Please log in to view dashboard';
+      throw new Error(message);
     }
+
+    return (await res.json()) as T;
   };
 
-  const getMoodEmoji = (moodScore: number) => {
-    if (moodScore >= 8) return '😊';
-    if (moodScore >= 6) return '🙂';
-    if (moodScore >= 4) return '😐';
-    if (moodScore >= 2) return '😕';
-    return '😞';
+  const formatRelativeTime = (iso?: string): { label: string; sortTime: number } => {
+    if (!iso) return { label: '—', sortTime: 0 };
+    const d = new Date(iso);
+    const t = d.getTime();
+    if (!Number.isFinite(t)) return { label: '—', sortTime: 0 };
+
+    const now = Date.now();
+    const diff = now - t;
+
+    const minutes = Math.floor(diff / 60000);
+    const hours = Math.floor(diff / 3600000);
+    const days = Math.floor(diff / 86400000);
+
+    if (minutes < 1) return { label: 'Just now', sortTime: t };
+    if (minutes < 60) return { label: `${minutes} min ago`, sortTime: t };
+    if (hours < 24) return { label: `${hours} hr ago`, sortTime: t };
+    if (days === 1) return { label: 'Yesterday', sortTime: t };
+    return { label: d.toLocaleDateString(), sortTime: t };
   };
 
-  const getMoodText = (moodScore: number) => {
-    if (moodScore >= 8) return 'Excellent';
-    if (moodScore >= 6) return 'Good';
-    if (moodScore >= 4) return 'Neutral';
-    if (moodScore >= 2) return 'Low';
-    return 'Poor';
-  };
-
-  const getStreakMessage = (streak: number) => {
-    if (streak === 0) return 'Start your streak today!';
-    if (streak < 3) return 'Keep going!';
-    if (streak < 7) return 'Great consistency!';
-    return 'Amazing dedication!';
+  const secondsToHours = (seconds?: number) => {
+    const s = toNumber(seconds, 0);
+    return s > 0 ? s / 3600 : 0;
   };
 
   const calculateProgress = (current: number, target: number) => {
     const percentage = Math.min((current / target) * 100, 100);
     return percentage;
   };
+
+  // Mood conversion: backend 1–5 -> UI 0–10 (multiply by 2)
+  const moodToTen = (mood1to5: number) => {
+    const v = toNumber(mood1to5, 0);
+    const clamped = Math.max(0, Math.min(v, 5));
+    return clamped * 2;
+  };
+
+  const getMoodEmoji = (moodScoreTenScale: number) => {
+    if (moodScoreTenScale >= 8) return '😊';
+    if (moodScoreTenScale >= 6) return '🙂';
+    if (moodScoreTenScale >= 4) return '😐';
+    if (moodScoreTenScale >= 2) return '😕';
+    return '😞';
+  };
+
+  const getMoodText = (moodScoreTenScale: number) => {
+    if (moodScoreTenScale >= 8) return 'Excellent';
+    if (moodScoreTenScale >= 6) return 'Good';
+    if (moodScoreTenScale >= 4) return 'Neutral';
+    if (moodScoreTenScale >= 2) return 'Low';
+    return 'Poor';
+  };
+
+  const getStreakMessage = (streakDays: number) => {
+    if (streakDays === 0) return 'Start your streak today!';
+    if (streakDays < 3) return 'Keep going!';
+    if (streakDays < 7) return 'Great consistency!';
+    return 'Amazing dedication!';
+  };
+
+  const displayName = useMemo(() => {
+    const full = account?.full_name?.trim();
+    if (full) return full;
+    const user = account?.username?.trim();
+    if (user) return user;
+    return 'there';
+  }, [account]);
+
+  const fetchAllDashboardData = async (isRefresh = false) => {
+    try {
+      isRefresh ? setRefreshing(true) : setLoading(true);
+
+      // Core data required for the top of the dashboard
+      const [accountRes, overviewRes] = await Promise.all([
+        apiFetch<AccountData>('/account'),
+        apiFetch<any>('/stats/overview'),
+      ]);
+
+      setAccount(accountRes);
+      setStats(normalizeStats(overviewRes));
+
+      // Everything else powers dashboard widgets and “recent activity”
+      const [
+        waterTodayRes,
+        waterWeekRes,
+        moodRecentRes,
+        moodAvgRes,
+        streakRes,
+        tasksRes,
+        studyHistRes,
+        workoutHistRes,
+        focusHistRes,
+        gratitudeRes,
+        journalRes,
+      ] = await Promise.allSettled([
+        apiFetch<WaterTodayResponse>('/water/today'),
+        apiFetch<any>('/water/week'),
+        apiFetch<any>('/mood/recent'),
+        apiFetch<any>('/mood/average'),
+        apiFetch<StudyStreakResponse>('/study/streak'),
+        apiFetch<StudyTasksResponse>('/study/tasks'),
+        apiFetch<any>('/study/history'),
+        apiFetch<any>('/workout/history'),
+        apiFetch<any>('/focus/history'),
+        apiFetch<any>('/gratitude/recent'),
+        apiFetch<any>('/journal/recent'),
+      ]);
+
+      // Water today
+      if (waterTodayRes.status === 'fulfilled') {
+        const wt = waterTodayRes.value;
+        setWaterToday(
+          toNumber(wt?.glasses ?? wt?.total_glasses ?? wt?.count, 0)
+        );
+      } else {
+        setWaterToday(0);
+      }
+
+      // Water week
+      if (waterWeekRes.status === 'fulfilled') {
+        const data = waterWeekRes.value;
+        const arr: any[] = Array.isArray(data) ? data : data?.entries ?? data?.week ?? [];
+        const normalized: WaterWeekEntry[] = (Array.isArray(arr) ? arr : []).map((x) => ({
+          date: String(x?.date ?? ''),
+          glasses: toNumber(x?.glasses, 0),
+        }));
+        setWaterWeek(normalized);
+      } else {
+        setWaterWeek([]);
+      }
+
+      // Mood recent (last 14)
+      if (moodRecentRes.status === 'fulfilled') {
+        const data = moodRecentRes.value;
+        const arr: any[] = Array.isArray(data) ? data : data?.entries ?? data?.recent ?? [];
+        const normalized: MoodEntry[] = (Array.isArray(arr) ? arr : [])
+          .map((x) => ({
+            id: x?.id,
+            mood_score: toNumber(x?.mood_score, 0),
+            notes: x?.notes,
+            created_at: x?.created_at,
+            date: x?.date,
+          }))
+          .filter((x) => x.mood_score > 0);
+        setMoodRecent(normalized);
+      } else {
+        setMoodRecent([]);
+      }
+
+      // Mood weekly average
+      if (moodAvgRes.status === 'fulfilled') {
+        const data = moodAvgRes.value;
+        // Could be { average: number } or plain number depending on implementation
+        const avg = toNumber((data as any)?.average ?? data, 0);
+        setMoodAverageWeek(avg);
+      } else {
+        setMoodAverageWeek(0);
+      }
+
+      // Study streak
+      if (streakRes.status === 'fulfilled') setStudyStreak(streakRes.value);
+      else setStudyStreak(null);
+
+      // Study tasks
+      if (tasksRes.status === 'fulfilled') setStudyTasks(tasksRes.value);
+      else setStudyTasks(null);
+
+      // Study history
+      if (studyHistRes.status === 'fulfilled') {
+        const data = studyHistRes.value;
+        const arr: any[] = Array.isArray(data) ? data : data?.sessions ?? data?.history ?? [];
+        const normalized: StudyHistoryItem[] = (Array.isArray(arr) ? arr : []).map((x) => ({
+          id: x?.id,
+          start_time: x?.start_time,
+          end_time: x?.end_time,
+          total_duration: toNumber(x?.total_duration, 0),
+          distractions: toNumber(x?.distractions, 0),
+          pomodoros: toNumber(x?.pomodoros, 0),
+        }));
+        setStudyHistory(normalized);
+      } else {
+        setStudyHistory([]);
+      }
+
+      // Workout history
+      if (workoutHistRes.status === 'fulfilled') {
+        const data = workoutHistRes.value;
+        const arr: any[] = Array.isArray(data) ? data : data?.workouts ?? data?.history ?? [];
+        const normalized: WorkoutHistoryItem[] = (Array.isArray(arr) ? arr : []).map((x) => ({
+          id: x?.id,
+          start_time: x?.start_time,
+          end_time: x?.end_time,
+          total_duration: toNumber(x?.total_duration, 0),
+          total_calories_burned: toNumber(x?.total_calories_burned ?? x?.total_calories, 0),
+          exercises: Array.isArray(x?.exercises) ? x.exercises : [],
+        }));
+        setWorkoutHistory(normalized);
+      } else {
+        setWorkoutHistory([]);
+      }
+
+      // Focus history
+      if (focusHistRes.status === 'fulfilled') {
+        const data = focusHistRes.value;
+        const arr: any[] = Array.isArray(data) ? data : data?.sessions ?? data?.history ?? [];
+        const normalized: FocusHistoryItem[] = (Array.isArray(arr) ? arr : []).map((x) => ({
+          id: x?.id,
+          session_type: x?.session_type,
+          duration: toNumber(x?.duration, 0),
+          breathing_pattern: x?.breathing_pattern,
+          ambient_sound: x?.ambient_sound,
+          completed_at: x?.completed_at,
+          created_at: x?.created_at,
+        }));
+        setFocusHistory(normalized);
+      } else {
+        setFocusHistory([]);
+      }
+
+      // Gratitude recent
+      if (gratitudeRes.status === 'fulfilled') {
+        const data = gratitudeRes.value;
+        const arr: any[] = Array.isArray(data) ? data : data?.entries ?? data?.recent ?? [];
+        const normalized: GratitudeEntry[] = (Array.isArray(arr) ? arr : []).map((x) => ({
+          id: x?.id,
+          entry_text: x?.entry_text,
+          date: x?.date,
+          created_at: x?.created_at,
+        }));
+        setGratitudeRecent(normalized);
+      } else {
+        setGratitudeRecent([]);
+      }
+
+      // Journal recent
+      if (journalRes.status === 'fulfilled') {
+        const data = journalRes.value;
+        const arr: any[] = Array.isArray(data) ? data : data?.entries ?? data?.recent ?? [];
+        const normalized: JournalEntry[] = (Array.isArray(arr) ? arr : []).map((x) => ({
+          id: x?.id,
+          entry_text: x?.entry_text,
+          created_at: x?.created_at,
+        }));
+        setJournalRecent(normalized);
+      } else {
+        setJournalRecent([]);
+      }
+
+      setError(null);
+      setLastUpdated(new Date());
+    } catch (err: any) {
+      setError(err?.message || 'Failed to load dashboard data');
+      // eslint-disable-next-line no-console
+      console.error('Error loading dashboard:', err);
+    } finally {
+      isRefresh ? setRefreshing(false) : setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const currentHour = new Date().getHours();
+    if (currentHour < 12) setGreeting('Good morning');
+    else if (currentHour < 18) setGreeting('Good afternoon');
+    else setGreeting('Good evening');
+
+    fetchAllDashboardData(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // --- Build Recent Activity from real endpoints ---
+  const recentActivity = useMemo<ActivityItem[]>(() => {
+    const items: ActivityItem[] = [];
+
+    // Most recent workout
+    const lastWorkout = workoutHistory?.[0];
+    if (lastWorkout?.start_time) {
+      const rel = formatRelativeTime(lastWorkout.start_time);
+      items.push({
+        key: `workout-${lastWorkout.id ?? 'last'}`,
+        icon: '🏋️',
+        title: 'Workout session',
+        timeLabel: rel.label,
+        rightLabel:
+          lastWorkout.total_calories_burned && lastWorkout.total_calories_burned > 0
+            ? `+${Math.round(lastWorkout.total_calories_burned)} kcal`
+            : undefined,
+        sortTime: rel.sortTime,
+      });
+    }
+
+    // Most recent study session
+    const lastStudy = studyHistory?.[0];
+    if (lastStudy?.start_time) {
+      const rel = formatRelativeTime(lastStudy.start_time);
+      const hrs = secondsToHours(lastStudy.total_duration);
+      items.push({
+        key: `study-${lastStudy.id ?? 'last'}`,
+        icon: '📚',
+        title: 'Study session',
+        timeLabel: rel.label,
+        rightLabel: hrs > 0 ? `${hrs.toFixed(1)} hrs` : undefined,
+        sortTime: rel.sortTime,
+      });
+    }
+
+    // Most recent focus session
+    const lastFocus = focusHistory?.[0];
+    const focusTime = lastFocus?.completed_at || lastFocus?.created_at;
+    if (focusTime) {
+      const rel = formatRelativeTime(focusTime);
+      items.push({
+        key: `focus-${lastFocus.id ?? 'last'}`,
+        icon: '🧠',
+        title: lastFocus.session_type ? `Focus: ${lastFocus.session_type}` : 'Focus session',
+        timeLabel: rel.label,
+        rightLabel:
+          lastFocus.duration && lastFocus.duration > 0 ? `${lastFocus.duration} min` : undefined,
+        sortTime: rel.sortTime,
+      });
+    }
+
+    // Most recent mood entry
+    const lastMood = moodRecent?.[0];
+    const moodTime = lastMood?.created_at || lastMood?.date;
+    if (lastMood?.mood_score) {
+      const rel = moodTime ? formatRelativeTime(moodTime) : { label: '—', sortTime: 0 };
+      const score10 = moodToTen(lastMood.mood_score);
+      items.push({
+        key: `mood-${lastMood.id ?? 'last'}`,
+        icon: '😊',
+        title: 'Mood check-in',
+        timeLabel: rel.label,
+        rightLabel: `${score10.toFixed(0)}/10`,
+        rightClassName: score10 >= 7 ? 'positive' : undefined,
+        sortTime: rel.sortTime,
+      });
+    }
+
+    // Water today (not timestamped, but still useful)
+    items.push({
+      key: 'water-today',
+      icon: '💧',
+      title: 'Water today',
+      timeLabel: 'Today',
+      rightLabel: `${waterToday} glasses`,
+      sortTime: Date.now() - 1, // keep it near top if nothing else
+    });
+
+    // Gratitude entry (most recent)
+    const lastGrat = gratitudeRecent?.[0];
+    if (lastGrat?.date || lastGrat?.created_at) {
+      const rel = formatRelativeTime(lastGrat.created_at || lastGrat.date);
+      items.push({
+        key: `gratitude-${lastGrat.id ?? 'last'}`,
+        icon: '🙏',
+        title: 'Gratitude entry',
+        timeLabel: rel.label,
+        rightLabel: lastGrat.entry_text ? 'Added' : undefined,
+        sortTime: rel.sortTime,
+      });
+    }
+
+    // Journal entry (most recent)
+    const lastJournal = journalRecent?.[0];
+    if (lastJournal?.created_at) {
+      const rel = formatRelativeTime(lastJournal.created_at);
+      items.push({
+        key: `journal-${lastJournal.id ?? 'last'}`,
+        icon: '📝',
+        title: 'Journal entry',
+        timeLabel: rel.label,
+        rightLabel: 'Saved',
+        sortTime: rel.sortTime,
+      });
+    }
+
+    // Sort newest first and keep the top 6
+    return items
+      .filter((x) => x.title && x.timeLabel)
+      .sort((a, b) => (b.sortTime || 0) - (a.sortTime || 0))
+      .slice(0, 6);
+  }, [workoutHistory, studyHistory, focusHistory, moodRecent, waterToday, gratitudeRecent, journalRecent]);
+
+  // --- Derived numbers (safe) ---
+  const caloriesWeek = stats?.total_calories_burned_week ?? 0;
+  const workoutsWeek = stats?.workouts_this_week ?? 0;
+
+  const studyHours = stats?.study_hours_this_week ?? 0;
+  const overviewStreak = stats?.current_study_streak ?? 0;
+
+  // Prefer /mood/average if available; fall back to overview avg
+  const avgMood1to5 = moodAverageWeek > 0 ? moodAverageWeek : stats?.avg_mood_7days ?? 0;
+  const avgMood10 = moodToTen(avgMood1to5);
+
+  const waterAvg = stats?.water_avg_7days ?? 0;
+  const focusSessions = stats?.focus_sessions_this_week ?? 0;
+
+  // Prefer /study/streak current/longest if present
+  const currentStreak = toNumber(studyStreak?.current_streak, overviewStreak);
+  const longestStreak = toNumber(studyStreak?.longest_streak, currentStreak);
+
+  const pendingTasksCount = studyTasks?.pending?.length ?? 0;
+  const completedTasksCount = studyTasks?.completed?.length ?? 0;
+
+  const lastUpdatedLabel = lastUpdated
+    ? lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    : '—';
 
   if (loading) {
     return (
@@ -137,7 +623,7 @@ const Dashboard: React.FC = () => {
         <div className="error-container">
           <h2>⚠️</h2>
           <p>{error}</p>
-          <button onClick={fetchStats} className="retry-button">
+          <button onClick={() => fetchAllDashboardData(true)} className="retry-button">
             Try Again
           </button>
         </div>
@@ -145,24 +631,16 @@ const Dashboard: React.FC = () => {
     );
   }
 
-  // Safe derived numbers (stats already normalized, but keep fallbacks)
-  const caloriesWeek = stats?.total_calories_burned_week ?? 0;
-  const workoutsWeek = stats?.workouts_this_week ?? 0;
-
-  const studyHours = stats?.study_hours_this_week ?? 0;
-  const studyStreak = stats?.current_study_streak ?? 0;
-
-  const avgMood = stats?.avg_mood_7days ?? 5;
-  const waterAvg = stats?.water_avg_7days ?? 0;
-
-  const focusSessions = stats?.focus_sessions_this_week ?? 0;
-
   return (
     <div className="dashboard-container container">
       <header className="dashboard-header">
-        <h1>{greeting}, Alex! 👋</h1>
-        <p>Here's your weekly overview.</p>
-        <div className="last-updated">Updated just now</div>
+        <h1>
+          {greeting}, {displayName}! 👋
+        </h1>
+        <p>Here&apos;s your weekly overview.</p>
+        <div className="last-updated">
+          {refreshing ? 'Refreshing…' : `Updated at ${lastUpdatedLabel}`}
+        </div>
       </header>
 
       <div className="dashboard-grid">
@@ -174,7 +652,7 @@ const Dashboard: React.FC = () => {
           </div>
           <p>Calories Burned This Week</p>
           <div className="stat-value">
-            {caloriesWeek.toLocaleString()}
+            {Math.round(caloriesWeek).toLocaleString()}
             <small className="stat-unit"> kcal</small>
           </div>
           <div className="stat-subtext">{workoutsWeek} workouts completed</div>
@@ -201,8 +679,13 @@ const Dashboard: React.FC = () => {
             {studyHours.toFixed(1)}
             <small className="stat-unit"> hrs</small>
           </div>
-          <div className="streak-badge">🔥 {studyStreak} day streak</div>
-          <div className="stat-subtext">{getStreakMessage(studyStreak)}</div>
+
+          <div className="streak-badge" title={`Longest streak: ${longestStreak} days`}>
+            🔥 {currentStreak} day streak
+          </div>
+
+          <div className="stat-subtext">{getStreakMessage(currentStreak)}</div>
+
           <div className="progress-bar">
             <div
               className="progress-fill study"
@@ -212,6 +695,12 @@ const Dashboard: React.FC = () => {
           <div className="progress-label">
             <span>Goal: 20 hours</span>
             <span>{calculateProgress(studyHours, 20).toFixed(0)}%</span>
+          </div>
+
+          <div style={{ marginTop: '0.75rem' }}>
+            <div className="stat-subtext">
+              Tasks: {pendingTasksCount} pending • {completedTasksCount} completed
+            </div>
           </div>
         </div>
 
@@ -223,16 +712,21 @@ const Dashboard: React.FC = () => {
           </div>
           <p>Average Mood (7 days)</p>
           <div className="stat-value">
-            {getMoodEmoji(avgMood)}
-            <span style={{ marginLeft: '0.5rem', fontSize: '2rem' }}>
-              {avgMood.toFixed(1)}/10
-            </span>
+            {getMoodEmoji(avgMood10)}
+            <span style={{ marginLeft: '0.5rem', fontSize: '2rem' }}>{avgMood10.toFixed(1)}/10</span>
           </div>
-          <div className="mood-text">{getMoodText(avgMood)}</div>
+          <div className="mood-text">{getMoodText(avgMood10)}</div>
           <div className="focus-sessions">
             <span className="focus-label">Focus Sessions:</span>
             <span className="focus-count">{focusSessions}</span>
           </div>
+
+          {moodRecent.length > 0 && (
+            <div className="stat-subtext" style={{ marginTop: '0.5rem' }}>
+              Latest check-in: {moodToTen(moodRecent[0].mood_score).toFixed(0)}/10
+              {moodRecent[0].notes ? ` • “${moodRecent[0].notes.slice(0, 40)}${moodRecent[0].notes.length > 40 ? '…' : ''}”` : ''}
+            </div>
+          )}
         </div>
 
         {/* Water Card */}
@@ -246,71 +740,87 @@ const Dashboard: React.FC = () => {
             {waterAvg.toFixed(1)}
             <small className="stat-unit"> glasses</small>
           </div>
+
+          <div className="stat-subtext" style={{ marginBottom: '0.5rem' }}>
+            Today: <strong>{waterToday}</strong> / 8 glasses
+          </div>
+
           <div className="water-cups">
             {[...Array(8)].map((_, i) => (
-              <div
-                key={i}
-                className={`water-cup ${i < Math.floor(waterAvg) ? 'filled' : ''}`}
-              >
+              <div key={i} className={`water-cup ${i < Math.floor(waterToday) ? 'filled' : ''}`}>
                 💧
               </div>
             ))}
           </div>
+
           <div className="progress-bar">
             <div
               className="progress-fill water"
-              style={{ width: `${calculateProgress(waterAvg, 8)}%` }}
+              style={{ width: `${calculateProgress(waterToday, 8)}%` }}
             ></div>
           </div>
           <div className="progress-label">
             <span>Goal: 8 glasses</span>
-            <span>{calculateProgress(waterAvg, 8).toFixed(0)}%</span>
+            <span>{calculateProgress(waterToday, 8).toFixed(0)}%</span>
           </div>
+
+          {waterWeek.length > 0 && (
+            <div className="stat-subtext" style={{ marginTop: '0.5rem' }}>
+              Last 7 days logged: {waterWeek.reduce((acc, x) => acc + (x.glasses || 0), 0)} glasses
+            </div>
+          )}
         </div>
 
-        {/* Tasks Card - Full Width */}
+        {/* Recent Activity - Full Width */}
         <div className="dashboard-card tasks-card">
           <div className="card-header">
             <h3>Recent Activity</h3>
-            <button className="refresh-button" onClick={fetchStats}>
-              ↻ Refresh
+            <button
+              className="refresh-button"
+              onClick={() => fetchAllDashboardData(true)}
+              disabled={refreshing}
+              title="Refresh dashboard"
+            >
+              {refreshing ? '…' : '↻ Refresh'}
             </button>
           </div>
+
           <div className="activity-list">
-            <div className="activity-item">
-              <div className="activity-icon">🏋️</div>
-              <div className="activity-content">
-                <span className="activity-title">Workout Completed</span>
-                <span className="activity-time">Today, 8:30 AM</span>
+            {recentActivity.length === 0 ? (
+              <div className="activity-item">
+                <div className="activity-icon">✨</div>
+                <div className="activity-content">
+                  <span className="activity-title">No recent activity yet</span>
+                  <span className="activity-time">Start a study, workout, focus session, or log mood/water.</span>
+                </div>
               </div>
-              <div className="activity-calories">+320 kcal</div>
-            </div>
+            ) : (
+              recentActivity.map((a) => (
+                <div className="activity-item" key={a.key}>
+                  <div className="activity-icon">{a.icon}</div>
+                  <div className="activity-content">
+                    <span className="activity-title">{a.title}</span>
+                    <span className="activity-time">{a.timeLabel}</span>
+                  </div>
+                  {a.rightLabel ? (
+                    <div className={`activity-calories ${a.rightClassName ?? ''}`.trim()}>
+                      {a.rightLabel}
+                    </div>
+                  ) : (
+                    <div className="activity-calories"> </div>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
 
-            <div className="activity-item">
-              <div className="activity-icon">📖</div>
-              <div className="activity-content">
-                <span className="activity-title">Study Session</span>
-                <span className="activity-time">Yesterday, 2 hours</span>
-              </div>
-              <div className="activity-calories">Focus +1</div>
+          {/* Small “extras” that prove we’re using more endpoints */}
+          <div style={{ marginTop: '1rem' }}>
+            <div className="stat-subtext">
+              Gratitude entries (7 days): {gratitudeRecent.length} • Journal entries: {journalRecent.length}
             </div>
-
-            <div className="activity-item">
-              <div className="activity-icon">😊</div>
-              <div className="activity-content">
-                <span className="activity-title">Mood Check-in</span>
-                <span className="activity-time">Yesterday, 8/10</span>
-              </div>
-              <div className="activity-calories positive">Great!</div>
-            </div>
-
-            <div className="activity-item">
-              <div className="activity-icon">💧</div>
-              <div className="activity-content">
-                <span className="activity-title">Water Intake</span>
-                <span className="activity-time">Yesterday, 7 glasses</span>
-              </div>
-              <div className="activity-calories">Almost there!</div>
+            <div className="stat-subtext">
+              Latest focus sessions loaded: {focusHistory.length} • Latest workouts loaded: {workoutHistory.length} • Latest study sessions loaded: {studyHistory.length}
             </div>
           </div>
         </div>
