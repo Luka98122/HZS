@@ -684,21 +684,16 @@ p {
 }
 
 .login-link:hover {
-  background-color: #f8f9fa;
   border-color: #adb5bd;
   color: #495057;
   text-decoration: none;
 }
 
 .register-link {
-  background-color: #4a6cf7;
   color: white;
-  border: 1px solid #4a6cf7;
 }
 
 .register-link:hover {
-  background-color: #3a5ce5;
-  border-color: #3a5ce5;
   color: white;
   text-decoration: none;
 }
