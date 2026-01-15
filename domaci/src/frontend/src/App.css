@@ -430,7 +430,7 @@ p {
 .step-number {
   width: 3.5rem;
   height: 3.5rem;
-  background-color: var(--primary);
+  background-color: #007B5F;
   color: white;
   border-radius: 50%;
   display: flex;

@@ -243,28 +243,28 @@ const App: React.FC = () => {
 
         <section id="trainers" className="team">
           <div className="container">
-            <h2 className="section-title">Meet Your <span className="highlight">Coaches</span></h2>
+            <h2 className="section-title">Meet the<span className="highlight">Developers</span></h2>
             <p className="section-subtitle">Expert trainers dedicated to your success</p>
             <div className="team-grid">
               <div className="team-member">
-                <div className="member-avatar">AM</div>
-                <h3>Luka Markovic</h3>
-                <p>HIIT Specialist</p>
+                <div className="member-avatar">AV</div>
+                <h3>Aleksandar Vasilić</h3>
+                <p>Backend dev</p>
               </div>
               <div className="team-member">
-                <div className="member-avatar">SJ</div>
+                <div className="member-avatar">PT</div>
                 <h3>Petar Tolimir</h3>
-                <p>Yoga & Mindfulness</p>
+                <p>Backend dev</p>
               </div>
               <div className="team-member">
-                <div className="member-avatar">KR</div>
-                <h3>Aleksandar Vasilic</h3>
-                <p>Strength Coach</p>
+                <div className="member-avatar">LM</div>
+                <h3>Luka Marković</h3>
+                <p>Frontend dev</p>
               </div>
               <div className="team-member">
-                <div className="member-avatar">JT</div>
-                <h3>Marko Mitic</h3>
-                <p>Nutritionist</p>
+                <div className="member-avatar">MM</div>
+                <h3>Marko Mitić</h3>
+                <p>Frontend dev</p>
               </div>
             </div>
           </div>
