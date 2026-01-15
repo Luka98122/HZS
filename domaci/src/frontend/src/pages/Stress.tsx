@@ -65,18 +65,11 @@ async function apiFetch<T>(
     throw new Error(msg);
   }
 
-  // Some endpoints might return empty body on success
   const text = await res.text();
   if (!text) return {} as T;
   return JSON.parse(text) as T;
 }
 
-/**
- * Simple “soundscapes” generator using Web Audio (no external audio files needed).
- * - Rain: bandpass-filtered noise with gentle amplitude modulation
- * - Forest: softer noise + low random “rustle” modulation
- * - White noise: plain noise
- */
 type SoundscapeKind = 'rain' | 'forest' | 'white';
 
 function createNoiseBuffer(ctx: AudioContext, seconds = 2): AudioBuffer {
@@ -183,22 +176,19 @@ const Stress: React.FC = () => {
   }, [cycleTotal]);
 
   const startBreathing = useCallback(async () => {
-    // Create a focus session entry immediately (duration will be “planned” = 60s; we’ll also update via another session if you want later)
-    // If your backend expects duration in seconds, this matches. If it expects minutes, adjust accordingly.
     try {
       setLoading(true);
       await apiFetch<FocusSession>('/focus/session', {
         method: 'POST',
         body: JSON.stringify({
           session_type: 'breathing',
-          duration: 60, // seconds (reasonable default)
+          duration: 60, 
           breathing_pattern: breathingPatternString,
         }),
       });
       showToast('success', 'Breathing session started.');
     } catch (e: any) {
       showToast('error', e?.message || 'Failed to start breathing session.');
-      // still allow breathing UI to run locally
     } finally {
       setLoading(false);
     }

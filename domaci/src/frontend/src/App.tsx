@@ -243,7 +243,7 @@ const App: React.FC = () => {
 
         <section id="trainers" className="team">
           <div className="container">
-            <h2 className="section-title">Meet the<span className="highlight">Developers</span></h2>
+            <h2 className="section-title">Meet the <span className="highlight">Developers</span></h2>
             <p className="section-subtitle">Expert team dedicated to your success</p>
             <div className="team-grid">
               <div className="team-member">
