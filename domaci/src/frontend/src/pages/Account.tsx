@@ -90,7 +90,7 @@ const Account: React.FC = () => {
                 setMessage({ type: 'success', text: 'Account updated successfully.' });
                 setNewPassword('');
                 setConfirmPassword('');
-                console.log("Wiping")
+                console.log("Updating localstorage userinfo")
                 const updatedUser = {
                     id: data.user.id,
                     username: data.user.username,
