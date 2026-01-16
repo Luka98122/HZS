@@ -202,10 +202,9 @@ const Hydration: React.FC = () => {
   return (
     <div className="hydration-page">
       <div className="hydration-header">
-        <div>
-          <h1 className="hydration-title">Hydration</h1>
-          <p className="hydration-subtitle">Log your water intake and stay on track 💧</p>
-        </div>
+        <h1 className="hydration-title">Hydration</h1>
+        <p className="hydration-subtitle">Log your water intake and stay on track 💧</p>
+
 
         <div className="hydration-header-actions">
           <Link to="/dashboard" className="btn btn-secondary">
