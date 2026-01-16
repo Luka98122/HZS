@@ -55,7 +55,7 @@ const Login: React.FC = () => {
       localStorage.setItem('isAuthenticated', 'true');
 
       setIsLoading(false);
-      navigate('/');
+      navigate('/home/');
 
     } catch (err) {
       console.error('Login error:', err);

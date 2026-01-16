@@ -90,6 +90,15 @@ const Account: React.FC = () => {
                 setMessage({ type: 'success', text: 'Account updated successfully.' });
                 setNewPassword('');
                 setConfirmPassword('');
+                console.log("Wiping")
+                const updatedUser = {
+                    id: data.user.id,
+                    username: data.user.username,
+                    email: data.user.email,
+                    full_name: data.user.full_name,
+                };
+
+                localStorage.setItem("user", JSON.stringify(updatedUser));
             } else {
                 setMessage({ type: 'error', text: data.error || 'Update failed.' });
             }
