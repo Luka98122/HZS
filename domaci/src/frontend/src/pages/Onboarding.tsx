@@ -24,6 +24,13 @@ const Onboarding: React.FC = () => {
     caloriesBurnPerWeek: 2000,
   });
 
+  // Separate "draft" strings so inputs can be temporarily empty while editing.
+  const [draft, setDraft] = useState({
+    waterGlassesPerDay: String(8),
+    studyHoursPerWeek: String(10),
+    caloriesBurnPerWeek: String(2000),
+  });
+
   const [loading, setLoading] = useState(false);
   const [prefillLoading, setPrefillLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -40,16 +47,37 @@ const Onboarding: React.FC = () => {
   const next = () => setStep((s) => clamp(s + 1, 1, 3));
   const back = () => setStep((s) => clamp(s - 1, 1, 3));
 
-  const updateNumber =
-    (key: keyof Goals, min: number, max: number) =>
+  const updateDraft =
+    (key: keyof Goals) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const raw = e.target.value;
-      const num = raw === '' ? NaN : Number(raw);
-
-      setGoals((prev) => ({
+      setDraft((prev) => ({
         ...prev,
-        [key]: Number.isFinite(num) ? clamp(num, min, max) : prev[key],
+        [key]: e.target.value,
       }));
+    };
+
+  // Commit draft -> goals when leaving a field (clamp + non-zero mins).
+  const commitField =
+    (key: keyof Goals, min: number, max: number) =>
+    () => {
+      setDraft((prevDraft) => {
+        const raw = prevDraft[key];
+
+        // If empty (or invalid), revert to current goals value
+        const parsed = raw === '' ? NaN : Number(raw);
+        const nextValue = Number.isFinite(parsed) ? clamp(parsed, min, max) : goals[key];
+
+        // Update goals and also normalize the draft text to what we committed
+        setGoals((prevGoals) => ({
+          ...prevGoals,
+          [key]: nextValue,
+        }));
+
+        return {
+          ...prevDraft,
+          [key]: String(nextValue),
+        };
+      });
     };
 
   // Prefill from backend (if onboarding already exists)
@@ -82,11 +110,18 @@ const Onboarding: React.FC = () => {
         const calories = Number(physical?.calories_burn_per_week);
         const studyHours = Number(study?.study_hours_per_week);
 
-        setGoals((prev) => ({
-          waterGlassesPerDay: Number.isFinite(water) ? clamp(water, 1, 30) : prev.waterGlassesPerDay,
-          caloriesBurnPerWeek: Number.isFinite(calories) ? clamp(calories, 100, 20000) : prev.caloriesBurnPerWeek,
-          studyHoursPerWeek: Number.isFinite(studyHours) ? clamp(studyHours, 1, 80) : prev.studyHoursPerWeek,
-        }));
+        const nextGoals: Goals = {
+          waterGlassesPerDay: Number.isFinite(water) ? clamp(water, 1, 30) : 8,
+          caloriesBurnPerWeek: Number.isFinite(calories) ? clamp(calories, 50, 5000) : 150,
+          studyHoursPerWeek: Number.isFinite(studyHours) ? clamp(studyHours, 1, 168) : 10,
+        };
+
+        setGoals(nextGoals);
+        setDraft({
+          waterGlassesPerDay: String(nextGoals.waterGlassesPerDay),
+          studyHoursPerWeek: String(nextGoals.studyHoursPerWeek),
+          caloriesBurnPerWeek: String(nextGoals.caloriesBurnPerWeek),
+        });
 
         if (typeof data?.recommendations === 'string') {
           setSavedRecommendations(data.recommendations);
@@ -105,15 +140,29 @@ const Onboarding: React.FC = () => {
     setLoading(true);
     setError(null);
 
+    // Normalize/commit all fields on submit so 0/empty can't be submitted.
+    const normalized: Goals = {
+      waterGlassesPerDay: clamp(Number(draft.waterGlassesPerDay) || goals.waterGlassesPerDay, 1, 30),
+      studyHoursPerWeek: clamp(Number(draft.studyHoursPerWeek) || goals.studyHoursPerWeek, 1, 80),
+      caloriesBurnPerWeek: clamp(Number(draft.caloriesBurnPerWeek) || goals.caloriesBurnPerWeek, 100, 20000),
+    };
+
+    setGoals(normalized);
+    setDraft({
+      waterGlassesPerDay: String(normalized.waterGlassesPerDay),
+      studyHoursPerWeek: String(normalized.studyHoursPerWeek),
+      caloriesBurnPerWeek: String(normalized.caloriesBurnPerWeek),
+    });
+
     // Build payload that matches your existing backend structure
     const payload = {
       categories: ['physical', 'study'], // keep backend logic happy (optional but useful)
       physical_goals: {
-        water_glasses_per_day: goals.waterGlassesPerDay,
-        calories_burn_per_week: goals.caloriesBurnPerWeek,
+        water_glasses_per_day: normalized.waterGlassesPerDay,
+        calories_burn_per_week: normalized.caloriesBurnPerWeek,
       },
       study_goals: {
-        study_hours_per_week: goals.studyHoursPerWeek,
+        study_hours_per_week: normalized.studyHoursPerWeek,
       },
       focus_goals: {},
       stress_goals: {},
@@ -188,10 +237,12 @@ const Onboarding: React.FC = () => {
                   <input
                     className="input"
                     type="number"
-                    min={1}
+                    min={0}
                     max={30}
-                    value={goals.waterGlassesPerDay}
-                    onChange={updateNumber('waterGlassesPerDay', 1, 30)}
+                    value={draft.waterGlassesPerDay}
+                    onChange={updateDraft('waterGlassesPerDay')}
+                    onBlur={commitField('waterGlassesPerDay', 1, 30)}
+                    inputMode="numeric"
                   />
                   <span className="field-suffix">glasses/day</span>
                 </div>
@@ -204,10 +255,12 @@ const Onboarding: React.FC = () => {
                   <input
                     className="input"
                     type="number"
-                    min={1}
+                    min={0}
                     max={80}
-                    value={goals.studyHoursPerWeek}
-                    onChange={updateNumber('studyHoursPerWeek', 1, 80)}
+                    value={draft.studyHoursPerWeek}
+                    onChange={updateDraft('studyHoursPerWeek')}
+                    onBlur={commitField('studyHoursPerWeek', 1, 80)}
+                    inputMode="numeric"
                   />
                   <span className="field-suffix">hrs/week</span>
                 </div>
@@ -220,15 +273,17 @@ const Onboarding: React.FC = () => {
                   <input
                     className="input"
                     type="number"
-                    min={100}
+                    min={0}
                     max={20000}
                     step={50}
-                    value={goals.caloriesBurnPerWeek}
-                    onChange={updateNumber('caloriesBurnPerWeek', 100, 20000)}
+                    value={draft.caloriesBurnPerWeek}
+                    onChange={updateDraft('caloriesBurnPerWeek')}
+                    onBlur={commitField('caloriesBurnPerWeek', 100, 20000)}
+                    inputMode="numeric"
                   />
                   <span className="field-suffix">kcal/week</span>
                 </div>
-                <span className="field-hint">Example: 1500–5000</span>
+                <span className="field-hint">Example: 100-500</span>
               </label>
             </div>
 
@@ -274,7 +329,6 @@ const Onboarding: React.FC = () => {
               <Link to="/dashboard" className="btn btn-primary">
                 Go to Dashboard
               </Link>
-              
             </div>
           </div>
         )}
