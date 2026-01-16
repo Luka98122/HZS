@@ -665,8 +665,11 @@ p {
     font-size: 1rem;
   }
 
-  .stat-number {
-    display: inline;
+  .stat-number, .stat-label {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
   }
 }
 
