@@ -16,12 +16,12 @@ type StartWorkoutResponse = {
 
 type LogExerciseResponse = {
   exercise_id: string;
-  completion_time: string; // ISO
+  completed_at: string; // ISO
 };
 
 type CompleteWorkoutResponse = {
   total_duration: number; // minutes (assumed)
-  calories_burned: number;
+  total_calories: number;
 };
 
 type ExerciseTemplate = {
@@ -46,7 +46,7 @@ type LoggedExercise = {
   duration?: number;
   calories_burned?: number;
   exercise_id: string;
-  completion_time: string;
+  completed_at: string;
 };
 
 function safeNumber(v: string): number | undefined {
@@ -281,7 +281,7 @@ const Workout: React.FC = () => {
         duration: payload.duration,
         calories_burned: payload.calories_burned,
         exercise_id: data.exercise_id,
-        completion_time: data.completion_time,
+        completed_at : data.completed_at,
       };
 
       setLogged((prev) => {
@@ -315,7 +315,7 @@ const Workout: React.FC = () => {
         }
       );
 
-      pushToast(`Workout complete 🎉 (${data.calories_burned} kcal)`);
+      pushToast(`Workout complete 🎉 (${data.total_calories} kcal)`);
       setSessionId(null);
       setStartTime(null);
     } catch (e: any) {
@@ -490,10 +490,18 @@ const Workout: React.FC = () => {
                             {e.calories_burned !== undefined && <span>{e.calories_burned} kcal</span>}
                           </span>
                           <span className="muted">
-                            {new Date(e.completion_time).toLocaleTimeString([], {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
+                            {(() => {
+                              const date = new Date(e.completed_at)
+                              console.log(date) // Server time is incorrect, need manual adjustment
+                              date.setHours(date.getHours() + 1)
+                              date.setMinutes(date.getMinutes()-1)
+                              date.setSeconds(0, 0)
+                              console.log(date)
+                              return date.toLocaleTimeString([], {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })
+                            })()}
                           </span>
                         </li>
                       ))}
