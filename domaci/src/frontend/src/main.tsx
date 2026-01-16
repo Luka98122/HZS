@@ -19,6 +19,7 @@ import Home from './pages/Home.tsx'
 import ScrollToTop from "./utils/ScrollToTop";
 import SidebarMenu from './utils/SidebarMenu';
 import RequireSession from './utils/RequireSession.tsx'
+import LogOut from './pages/Logout.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -43,6 +44,8 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/focus" element={<Focus />} />
           <Route path="/stress" element={<Stress />} />
           <Route path="/hydration" element={<Hydration />} />
+          <Route path="/logout" element={<LogOut />} />
+          
         </Route>
       </Routes>
 

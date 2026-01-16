@@ -16,6 +16,8 @@ import {
   Wind ,
   Brain ,
   GlassWater ,
+  Pencil ,
+  LogOut ,
   type LucideIcon,
 } from "lucide-react";
 
@@ -66,7 +68,8 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({
       { label: "Focus", path: "/focus", icon: BookHeadphones  },
       { label: "Stress", path: "/stress", icon: Brain   },
       { label: "Hydration", path: "/hydration", icon: GlassWater   },
-      
+      { label: "Edit Goals", path: "/onboarding", icon: Pencil    },
+      { label: "Sign out", path: "/logout", icon: LogOut    },
       // Add Settings only if you actually have /settings route:
       // { label: "Settings", path: "/settings", icon: Settings },
       { label: "Landing", path: "https://react.hoi5.com", icon: Wind },
