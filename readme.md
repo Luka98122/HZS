@@ -50,7 +50,7 @@ Current build script (build.sh) is designed to be ran on the linux server. Can b
 - [X] Make sure all pages are navigatable through UI
 - [X] Databse with at least 2 tables
 - [X] Have a github repo
-- [ ] Switch repo to public
+- [X] Switch repo to public
 - [X] Have at least one form.
 - [X] CRUD operations
 - [X] Frontend data validation ( regex )
@@ -63,8 +63,8 @@ Current build script (build.sh) is designed to be ran on the linux server. Can b
 - [X] Use cookies
 
 # Final checklist:
-- [ ] Demo video
-- [ ] Go over all boilerplate text on site and make sure it uses the correct branding, etc.
-- [ ] PDF documentation
-- [ ] Exported mysql database
+- [X] Demo video
+- [X] Go over all boilerplate text on site and make sure it uses the correct branding, etc.
+- [X] PDF documentation
+- [X] Exported mysql database
 - [ ] Upload all of the above to a cloud storage and email to hzs@fonis.rs
