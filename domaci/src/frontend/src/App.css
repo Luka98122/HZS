@@ -660,6 +660,14 @@ p {
   .features-grid {
     grid-template-columns: 1fr;
   }
+
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+
+  .stat-number {
+    display: inline;
+  }
 }
 
 .stat small {

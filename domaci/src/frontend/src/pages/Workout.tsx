@@ -344,7 +344,7 @@ const Workout: React.FC = () => {
       )}
 
       <header className="workout-hero">
-        <h1 style={{ fontSize: "3.5rem", marginBottom: "1rem" }}>{workoutTitle}</h1>
+        <h1 style={{ fontSize: "3rem", marginBottom: "1rem" }}>{workoutTitle}</h1>
         <p style={{ fontSize: "1.2rem", color: "#e2e8f0" }}>{workoutSubtitle}</p>
 
         <div className="workout-stats">

@@ -267,7 +267,7 @@
     color: #007B5F;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 480px) {
   .hydration-grid {
     grid-template-columns: 1fr;
   }
@@ -275,5 +275,19 @@
   .hydration-header {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .hydration-title {
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  .hydration-subtitle {
+    text-align: center;
+  }
+
+  .btn-secondary{
+    display: flex;
+    justify-content: center;
   }
 }
