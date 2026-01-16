@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom'; // Added Link import
+import { useNavigate, Link } from 'react-router-dom';
 import { hashPassword } from '../utils/hashPassword';
 import './Auth.css'; // Reusing Auth styles for consistency
 
@@ -16,7 +16,6 @@ const Account: React.FC = () => {
     const [updating, setUpdating] = useState(false);
     const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
-    // Form states
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [fullName, setFullName] = useState('');
@@ -41,7 +40,6 @@ const Account: React.FC = () => {
                 setEmail(data.user.email);
                 setFullName(data.user.full_name);
             } else {
-                // If unauthorized, redirect to login
                 if (response.status === 401) {
                     navigate('/login');
                 } else {
@@ -61,7 +59,6 @@ const Account: React.FC = () => {
         setUpdating(true);
         setMessage(null);
 
-        // Basic validation
         if (newPassword && newPassword !== confirmPassword) {
             setMessage({ type: 'error', text: 'Passwords do not match.' });
             setUpdating(false);
@@ -119,7 +116,7 @@ const Account: React.FC = () => {
                 localStorage.removeItem('isAuthenticated');
                 localStorage.removeItem('user');
                 navigate('/');
-                window.location.reload(); // Reload to clear any app state
+                window.location.reload(); 
             } else {
                 const data = await response.json();
                 setMessage({ type: 'error', text: data.error || 'Delete failed.' });

@@ -20,7 +20,6 @@ const Register: React.FC = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setFormData(prev => ({ ...prev, [id]: value }));
-    // Clear error when user starts typing
     if (errors[id]) {
       setErrors(prev => ({ ...prev, [id]: '' }));
     }
@@ -33,7 +32,7 @@ const Register: React.FC = () => {
       newErrors.name = 'Name is required';
     }
 
-    if (!formData.email.trim()) {
+    if (!formData.email.trim()) { // Regex email validation 
       newErrors.email = 'Email is required';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = 'Please enter a valid email';
@@ -43,7 +42,7 @@ const Register: React.FC = () => {
       newErrors.password = 'Password is required';
     } else if (formData.password.length < 8) {
       newErrors.password = 'Password must be at least 8 characters';
-    } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
+    } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) { // Regex pass validation
       newErrors.password = 'Password must contain uppercase, lowercase, and numbers';
     }
 
@@ -83,7 +82,6 @@ const Register: React.FC = () => {
         password: '***HIDDEN***'
       });
 
-      // API call to your Flask backend
       const response = await fetch('https://hak.hoi5.com/api/register', {
         method: 'POST',
         headers: {
@@ -106,13 +104,11 @@ const Register: React.FC = () => {
 
       console.log('Registration successful:', data);
 
-      // Store user data in localStorage
       localStorage.setItem('user', JSON.stringify(data.user));
       localStorage.setItem('isAuthenticated', 'true');
 
       setSuccessMessage('Account created successfully! Redirecting to home...');
 
-      // Redirect to home after 2 seconds
       setTimeout(() => {
         navigate('/onboarding');
       }, 2000);
@@ -130,7 +126,6 @@ const Register: React.FC = () => {
 
 
 
-  // Calculate password strength
   const getPasswordStrength = (password: string): { score: number; text: string; color: string } => {
     let score = 0;
 
@@ -172,8 +167,6 @@ const Register: React.FC = () => {
             {successMessage}
           </div>
         )}
-
-        {/* OAuth buttons removed */}
 
         <form className="auth-form" onSubmit={handleSubmit}>
           {errors.submit && (

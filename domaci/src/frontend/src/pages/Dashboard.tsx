@@ -32,13 +32,13 @@ interface WaterTodayResponse {
 }
 
 interface WaterWeekEntry {
-  date: string; // YYYY-MM-DD
+  date: string; 
   glasses: number;
 }
 
 interface MoodEntry {
   id?: number;
-  mood_score: number; // API says 1-5, but UI historically shows /10; we convert below.
+  mood_score: number; 
   notes?: string;
   created_at?: string;
   date?: string;
@@ -67,7 +67,7 @@ interface StudyHistoryItem {
   id?: number;
   start_time?: string;
   end_time?: string;
-  total_duration?: number; // seconds
+  total_duration?: number; 
   distractions?: number;
   pomodoros?: number;
 }
@@ -76,7 +76,7 @@ interface WorkoutHistoryItem {
   id?: number;
   start_time?: string;
   end_time?: string;
-  total_duration?: number; // seconds
+  total_duration?: number; 
   total_calories_burned?: number;
   exercises?: Array<{
     id?: number;
@@ -91,7 +91,7 @@ interface WorkoutHistoryItem {
 interface FocusHistoryItem {
   id?: number;
   session_type?: string;
-  duration?: number; // minutes or seconds depending on backend; we display raw if unsure
+  duration?: number; 
   breathing_pattern?: string;
   ambient_sound?: string;
   completed_at?: string;
@@ -118,22 +118,22 @@ type ActivityItem = {
   timeLabel: string;
   rightLabel?: string;
   rightClassName?: string;
-  sortTime: number; // ms epoch for sorting
+  sortTime: number; 
 };
 
 interface GoalsResponse {
   water_per_day_glasses?: number;
-  calories_per_week?: number;       // if you store it
-  workouts_per_week?: number;      // if you store it
-  study_hours_per_week?: number;   // if you store it
-  calories_burn_goal_week?: number; // optional if you return it directly
-  water_goal_glasses?: number;      // optional alias
+  calories_per_week?: number;      
+  workouts_per_week?: number;      
+  study_hours_per_week?: number;   
+  calories_burn_goal_week?: number;
+  water_goal_glasses?: number;     
 }
 
 type GoalsNormalized = {
-  waterPerDay: number;       // glasses
-  caloriesBurnWeek: number;  // kcal (target burn/week)
-  studyHoursWeek: number;    // hours
+  waterPerDay: number;       
+  caloriesBurnWeek: number;  
+  studyHoursWeek: number;    
 };
 
 
@@ -176,10 +176,7 @@ const Dashboard: React.FC = () => {
   });
 
 
-  /**
-   * Coerce unknown API values into safe numbers.
-   * Handles numbers, numeric strings, null/undefined, and other junk safely.
-   */
+
   const toNumber = (value: unknown, fallback = 0): number => {
     const n =
       typeof value === 'number'
@@ -191,15 +188,13 @@ const Dashboard: React.FC = () => {
     return Number.isFinite(n) ? n : fallback;
   };
 
-  /**
-   * Normalize /stats/overview response into the exact numeric shape the UI expects.
-   */
+
   const normalizeStats = (data: any): DashboardStats => ({
     workouts_this_week: toNumber(data?.workouts_this_week, 0),
     study_hours_this_week: toNumber(data?.study_hours_this_week, 0),
     current_study_streak: toNumber(data?.current_study_streak, 0),
-    // backend is 1-5 for mood; overview route currently returns avg as-is
-    // we’ll keep this value but convert to /10 when displaying to preserve existing UI.
+
+
     avg_mood_7days: toNumber(data?.avg_mood_7days, 0),
     water_avg_7days: toNumber(data?.water_avg_7days, 0),
     focus_sessions_this_week: toNumber(data?.focus_sessions_this_week, 0),
@@ -236,7 +231,6 @@ const Dashboard: React.FC = () => {
         const err = await res.json();
         if (err?.error) message = err.error;
       } catch {
-        // ignore
       }
       if (res.status === 401) message = 'Please log in to view dashboard';
       throw new Error(message);
@@ -275,7 +269,7 @@ const Dashboard: React.FC = () => {
     return percentage;
   };
 
-  // Mood conversion: backend 1–5 -> UI 0–10 (multiply by 2)
+  //backend 1–5 -> UI 0–10 (multiply by 2)
   const moodToTen = (mood1to5: number) => {
     const v = toNumber(mood1to5, 0);
     const clamped = Math.max(0, Math.min(v, 5));
@@ -316,7 +310,6 @@ const Dashboard: React.FC = () => {
     try {
       isRefresh ? setRefreshing(true) : setLoading(true);
 
-      // Core data required for the top of the dashboard
       const [accountRes, overviewRes] = await Promise.all([
         apiFetch<AccountData>('/account'),
         apiFetch<any>('/stats/overview'),
@@ -325,7 +318,6 @@ const Dashboard: React.FC = () => {
       setAccount(accountRes);
       setStats(normalizeStats(overviewRes));
 
-      // Everything else powers dashboard widgets and “recent activity”
       const [
         waterTodayRes,
         waterWeekRes,
@@ -354,7 +346,6 @@ const Dashboard: React.FC = () => {
         apiFetch<GoalsResponse>('/goals'),
       ]);
 
-      // Water today
       if (waterTodayRes.status === 'fulfilled') {
         const wt = waterTodayRes.value;
         setWaterToday(
@@ -364,7 +355,6 @@ const Dashboard: React.FC = () => {
         setWaterToday(0);
       }
 
-      // Water week
       if (waterWeekRes.status === 'fulfilled') {
         const data = waterWeekRes.value;
         const arr: any[] = Array.isArray(data) ? data : data?.entries ?? data?.week ?? [];
@@ -377,7 +367,6 @@ const Dashboard: React.FC = () => {
         setWaterWeek([]);
       }
 
-      // Mood recent (last 14)
       if (moodRecentRes.status === 'fulfilled') {
         const data = moodRecentRes.value;
         const arr: any[] = Array.isArray(data) ? data : data?.entries ?? data?.recent ?? [];
@@ -395,25 +384,20 @@ const Dashboard: React.FC = () => {
         setMoodRecent([]);
       }
 
-      // Mood weekly average
       if (moodAvgRes.status === 'fulfilled') {
         const data = moodAvgRes.value;
-        // Could be { average: number } or plain number depending on implementation
         const avg = toNumber((data as any)?.average ?? data, 0);
         setMoodAverageWeek(avg);
       } else {
         setMoodAverageWeek(0);
       }
 
-      // Study streak
       if (streakRes.status === 'fulfilled') setStudyStreak(streakRes.value);
       else setStudyStreak(null);
 
-      // Study tasks
       if (tasksRes.status === 'fulfilled') setStudyTasks(tasksRes.value);
       else setStudyTasks(null);
 
-      // Study history
       if (studyHistRes.status === 'fulfilled') {
         const data = studyHistRes.value;
         const arr: any[] = Array.isArray(data) ? data : data?.sessions ?? data?.history ?? [];
@@ -430,7 +414,6 @@ const Dashboard: React.FC = () => {
         setStudyHistory([]);
       }
 
-      // Workout history
       if (workoutHistRes.status === 'fulfilled') {
         const data = workoutHistRes.value;
         const arr: any[] = Array.isArray(data) ? data : data?.workouts ?? data?.history ?? [];
@@ -447,7 +430,6 @@ const Dashboard: React.FC = () => {
         setWorkoutHistory([]);
       }
 
-      // Focus history
       if (focusHistRes.status === 'fulfilled') {
         const data = focusHistRes.value;
         const arr: any[] = Array.isArray(data) ? data : data?.sessions ?? data?.history ?? [];
@@ -465,7 +447,6 @@ const Dashboard: React.FC = () => {
         setFocusHistory([]);
       }
 
-      // Gratitude recent
       if (gratitudeRes.status === 'fulfilled') {
         const data = gratitudeRes.value;
         const arr: any[] = Array.isArray(data) ? data : data?.entries ?? data?.recent ?? [];
@@ -480,7 +461,6 @@ const Dashboard: React.FC = () => {
         setGratitudeRecent([]);
       }
 
-      // Journal recent
       if (journalRes.status === 'fulfilled') {
         const data = journalRes.value;
         const arr: any[] = Array.isArray(data) ? data : data?.entries ?? data?.recent ?? [];
@@ -494,21 +474,16 @@ const Dashboard: React.FC = () => {
         setJournalRecent([]);
       }
 
-      // Goals
       if (goalsRes.status === 'fulfilled') {
         const g = goalsRes.value;
 
-        // water goal
         const waterPerDay = toNumber(
           g?.water_per_day_glasses ?? g?.water_per_day_glasses,
           8
         );
 
-        // Study weekly goal (optional, fallback to 20)
         const studyHoursWeek = toNumber(g?.study_hours_per_week, 20);
 
-        // Calories burned goal: if backend only stores calories/day, we can infer a week goal
-        // Otherwise, if you return calories_burn_goal_week directly, use it.
         const caloriesBurnWeek =
           (toNumber(g?.calories_per_week, 0) > 0 ? toNumber(g.calories_per_week, 0) : 400);
         console.log(waterPerDay);
@@ -529,7 +504,7 @@ const Dashboard: React.FC = () => {
       setLastUpdated(new Date());
     } catch (err: any) {
       setError(err?.message || 'Failed to load dashboard data');
-      // eslint-disable-next-line no-console
+
       console.error('Error loading dashboard:', err);
     } finally {
       isRefresh ? setRefreshing(false) : setLoading(false);
@@ -543,14 +518,12 @@ const Dashboard: React.FC = () => {
     else setGreeting('Good evening');
 
     fetchAllDashboardData(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, []);
 
-  // --- Build Recent Activity from real endpoints ---
   const recentActivity = useMemo<ActivityItem[]>(() => {
     const items: ActivityItem[] = [];
 
-    // Most recent workout
     const lastWorkout = workoutHistory?.[0];
     if (lastWorkout?.start_time) {
       const rel = formatRelativeTime(lastWorkout.start_time);
@@ -567,7 +540,6 @@ const Dashboard: React.FC = () => {
       });
     }
 
-    // Most recent study session
     const lastStudy = studyHistory?.[0];
     if (lastStudy?.start_time) {
       const rel = formatRelativeTime(lastStudy.start_time);
@@ -582,7 +554,6 @@ const Dashboard: React.FC = () => {
       });
     }
 
-    // Most recent focus session
     const lastFocus = focusHistory?.[0];
     const focusTime = lastFocus?.completed_at || lastFocus?.created_at;
     if (focusTime) {
@@ -598,7 +569,6 @@ const Dashboard: React.FC = () => {
       });
     }
 
-    // Most recent mood entry
     const lastMood = moodRecent?.[0];
     const moodTime = lastMood?.created_at || lastMood?.date;
     if (lastMood?.mood_score) {
@@ -615,17 +585,15 @@ const Dashboard: React.FC = () => {
       });
     }
 
-    // Water today (not timestamped, but still useful)
     items.push({
       key: 'water-today',
       icon: '💧',
       title: 'Water today',
       timeLabel: 'Today',
       rightLabel: `${waterToday} glasses`,
-      sortTime: Date.now() - 1, // keep it near top if nothing else
+      sortTime: Date.now() - 1, 
     });
 
-    // Gratitude entry (most recent)
     const lastGrat = gratitudeRecent?.[0];
     if (lastGrat?.date || lastGrat?.created_at) {
       const rel = formatRelativeTime(lastGrat.created_at || lastGrat.date);
@@ -639,7 +607,6 @@ const Dashboard: React.FC = () => {
       });
     }
 
-    // Journal entry (most recent)
     const lastJournal = journalRecent?.[0];
     if (lastJournal?.created_at) {
       const rel = formatRelativeTime(lastJournal.created_at);
@@ -653,28 +620,24 @@ const Dashboard: React.FC = () => {
       });
     }
 
-    // Sort newest first and keep the top 6
     return items
       .filter((x) => x.title && x.timeLabel)
       .sort((a, b) => (b.sortTime || 0) - (a.sortTime || 0))
       .slice(0, 6);
   }, [workoutHistory, studyHistory, focusHistory, moodRecent, waterToday, gratitudeRecent, journalRecent]);
 
-  // --- Derived numbers (safe) ---
   const caloriesWeek = stats?.total_calories_burned_week ?? 0;
   const workoutsWeek = stats?.workouts_this_week ?? 0;
 
   const studyHours = stats?.study_hours_this_week ?? 0;
   const overviewStreak = stats?.current_study_streak ?? 0;
 
-  // Prefer /mood/average if available; fall back to overview avg
   const avgMood1to5 = moodAverageWeek > 0 ? moodAverageWeek : stats?.avg_mood_7days ?? 0;
   const avgMood10 = moodToTen(avgMood1to5);
 
   const waterAvg = stats?.water_avg_7days ?? 0;
   const focusSessions = stats?.focus_sessions_this_week ?? 0;
 
-  // Prefer /study/streak current/longest if present
   const currentStreak = toNumber(studyStreak?.current_streak, overviewStreak);
   const longestStreak = toNumber(studyStreak?.longest_streak, currentStreak);
 
@@ -850,7 +813,6 @@ const Dashboard: React.FC = () => {
           )}
         </div>
 
-        {/* Recent Activity - Full Width */}
         <div className="dashboard-card tasks-card">
           <div className="card-header">
             <h3>Recent Activity</h3>
@@ -893,7 +855,6 @@ const Dashboard: React.FC = () => {
             )}
           </div>
 
-          {/* Small “extras” that prove we’re using more endpoints */}
           <div style={{ marginTop: '1rem' }}>
             <div className="stat-subtext">
               Gratitude entries (7 days): {gratitudeRecent.length} • Journal entries: {journalRecent.length}

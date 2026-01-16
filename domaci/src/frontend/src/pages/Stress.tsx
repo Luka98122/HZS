@@ -1,4 +1,3 @@
-// Stress.tsx
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import './Stress.css';
 
@@ -6,7 +5,7 @@ type ApiError = { message?: string } | string;
 
 type MoodEntry = {
   id?: string;
-  mood_score: number; // 1-5
+  mood_score: number; 
   notes?: string | null;
   created_at?: string;
   date?: string;
@@ -19,7 +18,7 @@ type JournalEntry = {
 };
 
 type WeeklyMoodAverage = {
-  average: number; // backend may return {average} or {avg}
+  average: number; 
   avg?: number;
 };
 
@@ -48,7 +47,7 @@ async function apiFetch<T>(
       'Content-Type': 'application/json',
       ...(options.headers ?? {}),
     },
-    credentials: 'include', // IMPORTANT: session cookie
+    credentials: 'include', 
   });
 
   if (!res.ok) {
@@ -59,7 +58,6 @@ async function apiFetch<T>(
       try {
         payload = await res.text();
       } catch {
-        // ignore
       }
     }
     const msg =
@@ -76,7 +74,7 @@ async function apiFetch<T>(
 
 type SoundscapeKind = 'rain' | 'forest' | 'white';
 type RecentMoodsResponse = { moods: MoodEntry[] };
-1
+
 function createNoiseBuffer(ctx: AudioContext, seconds = 2): AudioBuffer {
   const sampleRate = ctx.sampleRate;
   const buffer = ctx.createBuffer(1, sampleRate * seconds, sampleRate);
@@ -88,23 +86,22 @@ function createNoiseBuffer(ctx: AudioContext, seconds = 2): AudioBuffer {
 }
 
 const Stress: React.FC = () => {
-  // UI panels
   const [activeTool, setActiveTool] = useState<'breathing' | 'journaling' | 'soundscapes' | null>(null);
 
-  // Status
+
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState<{ kind: 'success' | 'error'; text: string } | null>(null);
 
-  // Mood
+
   const [moodNotes, setMoodNotes] = useState('');
   const [recentMoods, setRecentMoods] = useState<MoodEntry[]>([]);
   const [weeklyMoodAvg, setWeeklyMoodAvg] = useState<number | null>(null);
 
-  // Journal
+
   const [journalText, setJournalText] = useState('');
   const [recentJournals, setRecentJournals] = useState<JournalEntry[]>([]);
 
-  // Breathing
+
   const inhaleSec = 4;
   const holdSec = 7;
   const exhaleSec = 8;
@@ -117,7 +114,7 @@ const Stress: React.FC = () => {
   const breathingTimerRef = useRef<number | null>(null);
   const breathingStartedAtRef = useRef<number | null>(null);
 
-  // Soundscapes (WebAudio)
+
   const [soundscape, setSoundscape] = useState<SoundscapeKind>('rain');
   const [soundPlaying, setSoundPlaying] = useState(false);
   const audioCtxRef = useRef<AudioContext | null>(null);
@@ -159,19 +156,19 @@ const Stress: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    // Load initial data (if logged in, cookie will work; otherwise these may 401)
+
     (async () => {
       try {
         await Promise.allSettled([refreshMood(), refreshJournal()]);
       } catch {
-        // ignore here; actions will surface errors
+
       }
     })();
   }, [refreshMood, refreshJournal]);
 
-  // Breathing tick logic
+
   const computePhase = useCallback((tInCycle: number) => {
-    // tInCycle: 0..cycleTotal-1 (integer seconds elapsed in current cycle)
+
     if (tInCycle < inhaleSec) return 'Inhale' as const;
     if (tInCycle < inhaleSec + holdSec) return 'Hold' as const;
     return 'Exhale' as const;
@@ -229,7 +226,7 @@ const Stress: React.FC = () => {
       const secondsLeft = cycleTotal - (tInCycle + 1);
       setBreathingSecondsLeft(secondsLeft >= 0 ? secondsLeft : 0);
 
-      // increment cycle count at cycle boundary
+
       if (tInCycle === cycleTotal - 1) {
         setBreathingCycleCount((c) => c + 1);
       }
@@ -238,13 +235,13 @@ const Stress: React.FC = () => {
 
   useEffect(() => {
     return () => {
-      // cleanup timers + audio on unmount
+
       if (breathingTimerRef.current) window.clearInterval(breathingTimerRef.current);
       breathingTimerRef.current = null;
       try {
         if (sourceRef.current) sourceRef.current.stop();
       } catch {
-        // ignore
+
       }
       sourceRef.current = null;
       if (audioCtxRef.current) {
@@ -254,41 +251,39 @@ const Stress: React.FC = () => {
     };
   }, []);
 
-  // Soundscape controls
   const stopSound = useCallback(() => {
     setSoundPlaying(false);
     try {
       if (sourceRef.current) sourceRef.current.stop();
     } catch {
-      // ignore
+
     }
     sourceRef.current = null;
     extraNodeRef.current = null;
-    // keep context alive (faster restart), but mute
+
     if (gainRef.current) gainRef.current.gain.value = 0;
   }, []);
 
   const startSound = useCallback(async (kind: SoundscapeKind) => {
-    // Log focus session as “soundscape”
+
     try {
       setLoading(true);
       await apiFetch<FocusSession>('/focus/session', {
         method: 'POST',
         body: JSON.stringify({
           session_type: 'ambient',
-          duration: 300, // 5 minutes planned
+          duration: 300, 
           ambient_sound: kind,
         }),
       });
       showToast('success', 'Soundscape started.');
     } catch (e: any) {
       showToast('error', e?.message || 'Failed to start soundscape session.');
-      // still allow local playback
+
     } finally {
       setLoading(false);
     }
 
-    // Create/Resume audio
     const AudioContextCtor = (window.AudioContext || (window as any).webkitAudioContext) as typeof AudioContext | undefined;
     if (!AudioContextCtor) {
       showToast('error', 'Web Audio is not supported in this browser.');
@@ -302,11 +297,10 @@ const Stress: React.FC = () => {
       try {
         await ctx.resume();
       } catch {
-        // ignore
+
       }
     }
 
-    // Stop any existing nodes
     stopSound();
 
     const noiseBuffer = createNoiseBuffer(ctx, 2);
@@ -317,7 +311,6 @@ const Stress: React.FC = () => {
     const gain = ctx.createGain();
     gain.gain.value = 0.0;
 
-    // Route chain differs by kind
     if (kind === 'white') {
       src.connect(gain).connect(ctx.destination);
     } else if (kind === 'rain') {
@@ -326,10 +319,9 @@ const Stress: React.FC = () => {
       filter.frequency.value = 1500;
       filter.Q.value = 0.7;
 
-      // subtle amplitude modulation
       const lfo = ctx.createOscillator();
       lfo.type = 'sine';
-      lfo.frequency.value = 0.25; // slow
+      lfo.frequency.value = 0.25; 
       const lfoGain = ctx.createGain();
       lfoGain.gain.value = 0.18;
       lfo.connect(lfoGain).connect(gain.gain);
@@ -339,7 +331,7 @@ const Stress: React.FC = () => {
 
       extraNodeRef.current = lfo;
     } else {
-      // forest: lowpass + random “gust” modulation
+      //Forest: low pass + randon gust modulation
       const filter = ctx.createBiquadFilter();
       filter.type = 'lowpass';
       filter.frequency.value = 900;
@@ -361,7 +353,6 @@ const Stress: React.FC = () => {
     gainRef.current = gain;
 
     src.start();
-    // fade in
     gain.gain.cancelScheduledValues(ctx.currentTime);
     gain.gain.setValueAtTime(0.0, ctx.currentTime);
     gain.gain.linearRampToValueAtTime(0.35, ctx.currentTime + 0.8);
@@ -369,7 +360,6 @@ const Stress: React.FC = () => {
     setSoundPlaying(true);
   }, [showToast, stopSound]);
 
-  // Actions
   const handleMoodClick = useCallback(async (score: number) => {
     try {
       setLoading(true);
@@ -505,7 +495,6 @@ const Stress: React.FC = () => {
           </button>
         </div>
 
-        {/* Tool panel */}
         {activeTool && (
           <div className="tool-panel">
             {activeTool === 'breathing' && (
@@ -542,7 +531,6 @@ const Stress: React.FC = () => {
                       type="button"
                       className="secondary-btn"
                       onClick={() => {
-                        // quick “reset”
                         stopBreathing();
                         showToast('success', 'Reset.');
                       }}
@@ -680,7 +668,6 @@ const Stress: React.FC = () => {
                       onClick={async () => {
                         try {
                           setLoading(true);
-                          // logs a quick “focus session” without audio change
                           await apiFetch<FocusSession>('/focus/session', {
                             method: 'POST',
                             body: JSON.stringify({
@@ -711,7 +698,6 @@ const Stress: React.FC = () => {
           </div>
         )}
 
-        {/* Mood tracker */}
         <div className="mood-tracker">
           <h3>How are you feeling right now?</h3>
 

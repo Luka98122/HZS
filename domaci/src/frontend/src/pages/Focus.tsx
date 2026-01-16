@@ -21,12 +21,11 @@ interface FocusSessionResponse {
 
 const Focus: React.FC = () => {
   const [message, setMessage] = useState("Breathe In...");
-  const [timeLeft, setTimeLeft] = useState(300); // 5 minutes in seconds
+  const [timeLeft, setTimeLeft] = useState(300); 
   const [showCheckin, setShowCheckin] = useState(false);
-  const [totalSessionTime, setTotalSessionTime] = useState(0); // Track total time spent
+  const [totalSessionTime, setTotalSessionTime] = useState(0); 
   const navigate = useNavigate();
 
-  // Breathing animation timer
   useEffect(() => {
     if (showCheckin) return;
 
@@ -36,7 +35,6 @@ const Focus: React.FC = () => {
     return () => clearInterval(interval);
   }, [showCheckin]);
 
-  // Session countdown timer
   useEffect(() => {
     if (showCheckin) return;
 
@@ -47,7 +45,7 @@ const Focus: React.FC = () => {
 
     const timer = setInterval(() => {
       setTimeLeft(prev => {
-        // Track total time spent
+
         if (prev > 0) {
           setTotalSessionTime(prevTime => prevTime + 1);
         }
@@ -64,13 +62,12 @@ const Focus: React.FC = () => {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Create focus session in backend
   const createFocusSession = async (): Promise<FocusSessionResponse | null> => {
     try {
       const sessionData: FocusSessionData = {
         session_type: 'breathing',
-        duration: 300, // 5 minutes in seconds
-        breathing_pattern: '4-7-8', // Standard breathing pattern
+        duration: 300, 
+        breathing_pattern: '4-7-8', 
         ambient_sound: null
       };
 
@@ -79,7 +76,7 @@ const Focus: React.FC = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include', // Include cookies for authentication
+        credentials: 'include',
         body: JSON.stringify(sessionData),
       });
 
@@ -96,7 +93,6 @@ const Focus: React.FC = () => {
     }
   };
 
-  // Get focus history from backend
   const getFocusHistory = async () => {
     try {
       const response = await fetch('/api/focus/history', {
@@ -120,86 +116,25 @@ const Focus: React.FC = () => {
     }
   };
 
-  // Create gratitude entry in backend
-  const createGratitudeEntry = async (entryText: string): Promise<any> => {
-    try {
-      const today = new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
-      
-      const response = await fetch('/api/gratitude', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-          entry_text: entryText,
-          date: today
-        }),
-      });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log('Gratitude entry created:', data);
-      return data;
-    } catch (error) {
-      console.error('Error creating gratitude entry:', error);
-      return null;
-    }
-  };
-
-  // Get recent gratitude entries from backend
-  const getRecentGratitude = async () => {
-    try {
-      const response = await fetch('/api/gratitude/recent', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log('Recent gratitude entries:', data);
-      return data.entries;
-    } catch (error) {
-      console.error('Error fetching gratitude entries:', error);
-      return [];
-    }
-  };
 
   const handleYes = async () => {
     try {
-      // Create focus session before navigating
       const sessionResult = await createFocusSession();
-      
-      // Optional: You could also create a gratitude entry here
-      // For example, asking the user what they're grateful for today
-      // await createGratitudeEntry("I'm grateful for taking time to focus and breathe.");
-      
-      // Get history (optional - could be for analytics)
+
       await getFocusHistory();
       
       navigate('/home');
     } catch (error) {
       console.error('Error in handleYes:', error);
-      // Still navigate even if API fails
       navigate('/home');
     }
   };
 
   const handleMoreTime = () => {
-    // If user wants more time, we could create a session for the completed time
-    // and start a new session
     const completedTime = 300 - timeLeft;
     if (completedTime > 0) {
-      // Optionally create a session for the completed time
+
       createFocusSession().catch(console.error);
     }
     
@@ -208,9 +143,8 @@ const Focus: React.FC = () => {
   };
 
   const handleExit = async () => {
-    // If user exits early, we could still record a session with the time spent
     const actualTimeSpent = 300 - timeLeft;
-    if (actualTimeSpent > 30) { // Only record if they spent at least 30 seconds
+    if (actualTimeSpent > 30) { 
       try {
         const sessionData: FocusSessionData = {
           session_type: 'breathing',
@@ -234,12 +168,6 @@ const Focus: React.FC = () => {
     navigate('/home');
   };
 
-  // Load focus history when component mounts (optional)
-  useEffect(() => {
-    // Uncomment if you want to load history on mount
-    // getFocusHistory();
-    // getRecentGratitude();
-  }, []);
 
   return (
     <div className="focus-container">

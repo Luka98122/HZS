@@ -1,4 +1,3 @@
-// SidebarMenu.tsx
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
@@ -21,7 +20,6 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-// Define the link structure (store icon component type, not an instantiated element)
 export interface MenuLink {
   label: string;
   path: string;
@@ -29,7 +27,6 @@ export interface MenuLink {
   external?: boolean;
 }
 
-// Component props
 export interface SidebarMenuProps {
   initialOpen?: boolean;
   position?: "top-left" | "top-right" | "bottom-left" | "bottom-right";
@@ -50,14 +47,11 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({
   const [isDragging, setIsDragging] = useState(false);
   const [isDraggable, setIsDraggable] = useState(false);
 
-  // Keep button position in state
   const [dragOffset, setDragOffset] = useState({ x: 20, y: 20 });
 
-  // Refs for drag math (avoids stale closures)
   const dragStartRef = useRef<{ startX: number; startY: number } | null>(null);
   const movedRef = useRef(false);
 
-  // Default links if none provided (match your actual Routes)
   const defaultLinks: MenuLink[] = useMemo(
     () => [
       { label: "Home", path: "/home", icon: Home },
@@ -70,8 +64,6 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({
       { label: "Hydration", path: "/hydration", icon: GlassWater   },
       { label: "Edit Goals", path: "/onboarding", icon: Pencil    },
       { label: "Sign out", path: "/logout", icon: LogOut    },
-      // Add Settings only if you actually have /settings route:
-      // { label: "Settings", path: "/settings", icon: Settings },
       { label: "Landing", path: "https://react.hoi5.com", icon: Wind },
     ],
     []
@@ -85,19 +77,17 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({
     if (link.external) {
       window.open(link.path, "_blank", "noopener,noreferrer");
     } else {
-      navigate(link.path); // ✅ SPA navigation (no full reload)
+      navigate(link.path); 
     }
     setIsOpen(false);
   };
 
-  // Close menu on route change (nice UX, avoids weird open state)
   useEffect(() => {
-    // location.key changes on navigation
+
     setIsOpen(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [location.key]);
 
-  // Handle keyboard shortcuts
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.ctrlKey && (e.key === "m" || e.key === "M")) {
@@ -114,14 +104,12 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({
     return () => window.removeEventListener("keydown", handleKeyPress);
   }, [isOpen]);
 
-  // Handle drag start (mouse)
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!isDraggable) return;
 
     setIsDragging(true);
     movedRef.current = false;
 
-    // Starting delta between cursor and button top-left
     dragStartRef.current = {
       startX: e.clientX - dragOffset.x,
       startY: e.clientY - dragOffset.y,
@@ -153,7 +141,6 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({
     document.addEventListener("mouseup", handleMouseUp);
   };
 
-  // Position styles for the menu button
   const getButtonPositionStyles = () => {
     switch (position) {
       case "top-right":
@@ -162,15 +149,13 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({
         return { bottom: 20, left: 20, top: "auto" as const };
       case "bottom-right":
         return { bottom: 20, right: 20, top: "auto" as const };
-      default: // "top-left"
+      default:
         return { top: dragOffset.y, left: dragOffset.x };
     }
   };
 
-  // Position styles for the popover menu
   const getPanelPositionStyles = () => {
-    // For fixed corners, we anchor panel below/above button.
-    // For draggable (top-left default), we use dragOffset.
+
     const baseX = dragOffset.x;
     const baseY = dragOffset.y;
 
@@ -184,13 +169,12 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({
       return { bottom: 20 + 60, right: 20 };
     }
 
-    // Default/top-left draggable: place just under the button
     return { top: baseY + 60, left: baseX };
   };
 
   return (
     <>
-      {/* Drag Toggle Hint */}
+
       {isDraggable && (
         <div
           style={{
@@ -236,10 +220,9 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({
           padding: "0px"
         }}
         onClick={(e) => {
-          // If we dragged, don't treat as a click toggle
+
           if (isDragging && movedRef.current) return;
 
-          // Double click toggles draggable lock/unlock
           if (e.detail === 2) {
             toggleDraggable();
             return;
@@ -253,7 +236,6 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({
         {isOpen ? <X size={24} /> : <Menu size={24} />}
       </button>
 
-      {/* Sidebar Menu Panel */}
       <div
         style={{
           position: "fixed",
@@ -268,9 +250,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({
           opacity: isOpen ? 1 : 0,
           visibility: isOpen ? "visible" : "hidden",
           transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-
-          // ✅ add these
-          maxHeight: "calc(100vh - 85px)", // keep some margin
+          maxHeight: "calc(100vh - 85px)",
           overflowY: "auto",
           overscrollBehavior: "contain",
           WebkitOverflowScrolling: "touch",
@@ -358,7 +338,6 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({
         </div>
       </div>
 
-      {/* Backdrop */}
       {isOpen && (
         <div
           onClick={() => setIsOpen(false)}

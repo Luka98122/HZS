@@ -14,7 +14,7 @@ export default function RequireSession() {
       try {
         const res = await fetch("https://hak.hoi5.com/api/account", {
           method: "GET",
-          credentials: "include", // 🔑 send sessid cookie
+          credentials: "include",
           headers: {
             Accept: "application/json",
           },
@@ -42,7 +42,7 @@ export default function RequireSession() {
   }, []);
 
   if (status === "checking") {
-    return null; // or <LoadingSpinner />
+    return null; 
   }
 
   if (status === "unauthed") {

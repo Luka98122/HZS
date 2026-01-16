@@ -1,8 +1,6 @@
-// Study.tsx
 import React, { useState, useEffect, useRef } from 'react';
 import './Study.css';
 
-// Removed unused StudySession interface
 
 interface StudyTask {
   id: number;
@@ -23,13 +21,12 @@ interface StudyStreak {
 const API_BASE_URL = 'https://hak.hoi5.com/api';
 
 const Study: React.FC = () => {
-  // Timer states
-  const [timeLeft, setTimeLeft] = useState<number>(25 * 60); // 25 minutes in seconds
+
+  const [timeLeft, setTimeLeft] = useState<number>(25 * 60); 
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [isBreak, setIsBreak] = useState<boolean>(false);
   const [activeSessionId, setActiveSessionId] = useState<number | null>(null);
   
-  // Task states
   const [tasks, setTasks] = useState<{
     pending: StudyTask[];
     completed: StudyTask[];
@@ -37,7 +34,6 @@ const Study: React.FC = () => {
   const [newTaskName, setNewTaskName] = useState<string>('');
   const [newTaskTime, setNewTaskTime] = useState<number>(25);
   
-  // Stats states
   const [distractionCount, setDistractionCount] = useState<number>(0);
   const [pomodoroCount, setPomodoroCount] = useState<number>(0);
   const [streak, setStreak] = useState<StudyStreak>({
@@ -46,15 +42,13 @@ const Study: React.FC = () => {
     last_study_date: null
   });
   
-  const timerRef = useRef<number | null>(null); // Changed from NodeJS.Timeout to number
+  const timerRef = useRef<number | null>(null);
 
-  // Fetch tasks on mount
   useEffect(() => {
     fetchTasks();
     fetchStreak();
   }, []);
 
-  // Timer effect
   useEffect(() => {
     if (isRunning && timeLeft > 0) {
       timerRef.current = window.setInterval(() => {
@@ -94,7 +88,7 @@ const Study: React.FC = () => {
       const data = await response.json();
       setActiveSessionId(data.session_id);
       setIsRunning(true);
-      setTimeLeft(isBreak ? 5 * 60 : 25 * 60); // Reset timer
+      setTimeLeft(isBreak ? 5 * 60 : 25 * 60); 
     } catch (error) {
       console.error('Error starting study session:', error);
       alert('Failed to start study session. Please check your login.');
@@ -154,13 +148,12 @@ const Study: React.FC = () => {
         setPomodoroCount(0);
         fetchStreak();
         
-        // Switch to break or focus
         if (!isBreak) {
           setIsBreak(true);
-          setTimeLeft(5 * 60); // 5 minute break
+          setTimeLeft(5 * 60); 
         } else {
           setIsBreak(false);
-          setTimeLeft(25 * 60); // 25 minute focus
+          setTimeLeft(25 * 60); 
         }
       }
     } catch (error) {
@@ -302,7 +295,6 @@ const Study: React.FC = () => {
     <div className="study-container container">
       <h1 className="section-title">Deep Work Session</h1>
 
-      {/* Streak Display */}
       <div className="streak-display">
         <div className="streak-item">
           <span className="streak-label">Current Streak</span>
@@ -340,7 +332,6 @@ const Study: React.FC = () => {
           </button>
         </div>
         
-        {/* Session Controls */}
         {activeSessionId && (
           <div className="session-controls">
             <div className="session-stats">
@@ -365,7 +356,6 @@ const Study: React.FC = () => {
         )}
       </div>
 
-      {/* Task Management */}
       <div className="task-management">
         <h2>Task Management</h2>
         <div className="task-input">
@@ -395,7 +385,6 @@ const Study: React.FC = () => {
         </div>
       </div>
 
-      {/* Task Board */}
       <div className="task-board">
         <div className="task-column">
           <h3 style={{ marginBottom: '1rem', color: '#94a3b8' }}>Pending ({tasks.pending.length})</h3>

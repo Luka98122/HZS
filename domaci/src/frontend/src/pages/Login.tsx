@@ -26,7 +26,6 @@ const Login: React.FC = () => {
         rememberMe
       });
 
-      // API call to your Flask backend
       const response = await fetch('https://hak.hoi5.com/api/login', {
         method: 'POST',
         headers: {
@@ -47,14 +46,12 @@ const Login: React.FC = () => {
 
       console.log('Login successful:', data);
 
-      // Store user data in localStorage if remember me is checked
       if (rememberMe) {
         localStorage.setItem('user', JSON.stringify(data.user));
       } else {
         sessionStorage.setItem('user', JSON.stringify(data.user));
       }
 
-      // Store auth state
       localStorage.setItem('isAuthenticated', 'true');
 
       setIsLoading(false);
@@ -69,49 +66,6 @@ const Login: React.FC = () => {
 
 
 
-  const handleForgotPassword = async (e: React.MouseEvent) => {
-    e.preventDefault();
-
-    if (!email) {
-      setError('Please enter your email to reset password');
-      return;
-    }
-
-    try {
-      console.log('Password reset requested for:', email);
-      // TODO: Implement forgot password endpoint
-      // const response = await fetch('https://hak.hoi5.com/api/forgot-password', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ email }),
-      // });
-
-      setError(`Password reset link has been sent to ${email}`);
-
-      // Clear error after 5 seconds
-      setTimeout(() => setError(''), 5000);
-    } catch (err) {
-      setError('Failed to send reset link. Please try again.');
-    }
-  };
-
-  // Check health endpoint
-  const checkHealth = async () => {
-    try {
-      const response = await fetch('https://hak.hoi5.com/api/health', {
-        credentials: 'include',
-      });
-      const data = await response.json();
-      console.log('Health check:', data);
-    } catch (error) {
-      console.error('Health check failed:', error);
-    }
-  };
-
-  // Call health check on component mount
-  React.useEffect(() => {
-    checkHealth();
-  }, []);
 
   return (
     <div className="auth-container">
@@ -124,8 +78,6 @@ const Login: React.FC = () => {
           <h2>Welcome Back</h2>
           <p>Sign in to your account to continue your journey</p>
         </div>
-
-        {/* OAuth buttons removed */}
 
         <form className="auth-form" onSubmit={handleSubmit}>
           {error && (
@@ -174,13 +126,7 @@ const Login: React.FC = () => {
               />
               <span>Remember me</span>
             </label>
-            <a
-              href="#forgot-password"
-              className="forgot-password"
-              onClick={handleForgotPassword}
-            >
-              Forgot password?
-            </a>
+            
           </div>
 
           <button

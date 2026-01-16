@@ -24,7 +24,6 @@ const Onboarding: React.FC = () => {
     caloriesBurnPerWeek: 2000,
   });
 
-  // Separate "draft" strings so inputs can be temporarily empty while editing.
   const [draft, setDraft] = useState({
     waterGlassesPerDay: String(8),
     studyHoursPerWeek: String(10),
@@ -56,18 +55,16 @@ const Onboarding: React.FC = () => {
       }));
     };
 
-  // Commit draft -> goals when leaving a field (clamp + non-zero mins).
   const commitField =
     (key: keyof Goals, min: number, max: number) =>
     () => {
       setDraft((prevDraft) => {
         const raw = prevDraft[key];
 
-        // If empty (or invalid), revert to current goals value
         const parsed = raw === '' ? NaN : Number(raw);
         const nextValue = Number.isFinite(parsed) ? clamp(parsed, min, max) : goals[key];
 
-        // Update goals and also normalize the draft text to what we committed
+        
         setGoals((prevGoals) => ({
           ...prevGoals,
           [key]: nextValue,
@@ -80,7 +77,6 @@ const Onboarding: React.FC = () => {
       });
     };
 
-  // Prefill from backend (if onboarding already exists)
   useEffect(() => {
     const loadExisting = async () => {
       setPrefillLoading(true);
@@ -93,7 +89,6 @@ const Onboarding: React.FC = () => {
           headers: { Accept: 'application/json' },
         });
 
-        // If not found, that's fine: user hasn't done onboarding yet
         if (res.status === 404) return;
 
         const data = await res.json();
@@ -102,7 +97,6 @@ const Onboarding: React.FC = () => {
           throw new Error(data?.error || 'Failed to load onboarding data');
         }
 
-        // Map backend JSON -> UI state (defensive reading)
         const physical = data?.physical_goals || {};
         const study = data?.study_goals || {};
 
@@ -140,7 +134,6 @@ const Onboarding: React.FC = () => {
     setLoading(true);
     setError(null);
 
-    // Normalize/commit all fields on submit so 0/empty can't be submitted.
     const normalized: Goals = {
       waterGlassesPerDay: clamp(Number(draft.waterGlassesPerDay) || goals.waterGlassesPerDay, 1, 30),
       studyHoursPerWeek: clamp(Number(draft.studyHoursPerWeek) || goals.studyHoursPerWeek, 1, 80),
@@ -154,9 +147,8 @@ const Onboarding: React.FC = () => {
       caloriesBurnPerWeek: String(normalized.caloriesBurnPerWeek),
     });
 
-    // Build payload that matches your existing backend structure
     const payload = {
-      categories: ['physical', 'study'], // keep backend logic happy (optional but useful)
+      categories: ['physical', 'study'], 
       physical_goals: {
         water_glasses_per_day: normalized.waterGlassesPerDay,
         calories_burn_per_week: normalized.caloriesBurnPerWeek,

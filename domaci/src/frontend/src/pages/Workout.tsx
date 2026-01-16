@@ -1,4 +1,3 @@
-// Workout.tsx
 import React, { useMemo, useState } from "react";
 import "./Workout.css";
 
@@ -11,16 +10,16 @@ type ApiError = {
 
 type StartWorkoutResponse = {
   session_id: string;
-  start_time: string; // ISO
+  start_time: string; 
 };
 
 type LogExerciseResponse = {
   exercise_id: string;
-  completed_at: string; // ISO
+  completed_at: string; 
 };
 
 type CompleteWorkoutResponse = {
-  total_duration: number; // minutes (assumed)
+  total_duration: number;
   total_calories: number;
 };
 
@@ -29,11 +28,11 @@ type ExerciseTemplate = {
   order: number;
   name: string;
   tag: string;
-  prescription: string; // display text
+  prescription: string; 
   defaults: {
     exercise_type: string;
     reps?: number;
-    duration?: number; // seconds
+    duration?: number; 
     calories_burned?: number;
   };
   inputMode: "reps" | "duration" | "reps_or_duration";
@@ -88,13 +87,7 @@ const Workout: React.FC = () => {
   const workoutTitle = "Bodyweight Circuit";
   const workoutSubtitle = "45 Min • Intermediate • Strength";
 
-  /**
-   * Calories model:
-   * - For rep-based exercises: calories = reps * kcalPerRep
-   * - For duration-based exercises: calories = seconds * kcalPerSecond
-   *
-   * Tune these constants to match your backend/product expectations.
-   */
+
   const CALORIES_MODEL = useMemo(
     () => ({
       "Push-ups": { kcalPerRep: 0.35 },
@@ -159,7 +152,6 @@ const Workout: React.FC = () => {
 
   const [logged, setLogged] = useState<Record<string, LoggedExercise[]>>({});
 
-  // Inputs per template (calories is now computed, not editable)
   const [inputs, setInputs] = useState<
     Record<string, { reps: string; duration: string }>
   >(() => {
@@ -209,7 +201,6 @@ const Workout: React.FC = () => {
       return Math.max(0, Math.round(duration * kcalPerSecond));
     }
 
-    // reps_or_duration: prefer reps if provided, else duration
     const kcalPerRep = model?.kcalPerRep ?? 0;
     const kcalPerSecond = model?.kcalPerSecond ?? 0;
     if (reps > 0) return Math.max(0, Math.round(reps * kcalPerRep));
@@ -248,7 +239,6 @@ const Workout: React.FC = () => {
       const reps = safeNumber(inputs[template.id]?.reps ?? "");
       const duration = safeNumber(inputs[template.id]?.duration ?? "");
 
-      // Basic validation
       if (template.inputMode === "reps" && (reps === undefined || reps < 0)) {
         throw new Error("Please enter reps (0 or more).");
       }
@@ -258,7 +248,6 @@ const Workout: React.FC = () => {
 
       const computedCalories = computeCalories(template);
 
-      // Backend REQUIRES all fields — even if unused
       const payload = {
         exercise_type: template.defaults.exercise_type,
         reps: reps !== undefined ? Math.max(0, Math.floor(reps)) : 0,
@@ -451,7 +440,6 @@ const Workout: React.FC = () => {
                     </label>
                   )}
 
-                  {/* Computed calories (read-only) */}
                   <label className="field">
                     <span>Calories (auto)</span>
                     <input
@@ -492,7 +480,7 @@ const Workout: React.FC = () => {
                           <span className="muted">
                             {(() => {
                               const date = new Date(e.completed_at)
-                              console.log(date) // Server time is incorrect, need manual adjustment
+                              console.log(date) 
                               date.setHours(date.getHours() + 1)
                               date.setMinutes(date.getMinutes()-1)
                               date.setSeconds(0, 0)

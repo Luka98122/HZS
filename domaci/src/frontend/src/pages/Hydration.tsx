@@ -3,17 +3,17 @@ import { Link } from "react-router-dom";
 import "./Hydration.css";
 
 type WeekEntry = {
-  date: string; // expected: YYYY-MM-DD (or ISO). We'll display a friendly label.
+  date: string; 
   glasses: number;
 };
 
 type GoalsResponse = {
   water_per_day_glasses?: number;
-  water_goal_glasses?: number; // optional alias
-  waterPerDay?: number;        // optional alias if you ever return camelCase
+  water_goal_glasses?: number; 
+  waterPerDay?: number;        
 };
 
-const API_BASE = "https://hak.hoi5.com/api"; // ✅ no trailing slash
+const API_BASE = "https://hak.hoi5.com/api";
 
 const Hydration: React.FC = () => {
   const [todayGlasses, setTodayGlasses] = useState<number>(0);
@@ -26,7 +26,6 @@ const Hydration: React.FC = () => {
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
 
-  // ✅ goal comes from /goals, same as dashboard (default fallback = 8)
   const [goal, setGoal] = useState<number>(8);
 
   const toNumber = (value: unknown, fallback = 0): number => {
@@ -46,7 +45,6 @@ const Hydration: React.FC = () => {
   }, [todayGlasses, goal]);
 
   const todayYMD = () => {
-    // Local date -> YYYY-MM-DD
     const d = new Date();
     const yyyy = d.getFullYear();
     const mm = String(d.getMonth() + 1).padStart(2, "0");
@@ -55,7 +53,6 @@ const Hydration: React.FC = () => {
   };
 
   const formatDateLabel = (dateStr: string) => {
-    // Accept YYYY-MM-DD or ISO string
     const d = new Date(dateStr.length === 10 ? `${dateStr}T00:00:00` : dateStr);
     if (Number.isNaN(d.getTime())) return dateStr;
     return d.toLocaleDateString(undefined, {
@@ -106,7 +103,6 @@ const Hydration: React.FC = () => {
 
     const data = await res.json();
 
-    // ✅ backend returns { week: [...] }, dashboard also supports other shapes
     const arr: any[] = Array.isArray(data)
       ? data
       : data?.week ?? data?.entries ?? data?.history ?? [];
@@ -121,7 +117,6 @@ const Hydration: React.FC = () => {
     setWeek(normalized);
   };
 
-  // ✅ fetch goal from /goals (same idea as dashboard)
   const fetchGoal = async () => {
     const res = await fetch(`${API_BASE}/goals`, {
       method: "GET",
@@ -130,7 +125,6 @@ const Hydration: React.FC = () => {
     });
 
     if (!res.ok) {
-      // if goals endpoint fails, keep default goal = 8 (don’t block hydration)
       return;
     }
 
@@ -158,7 +152,6 @@ const Hydration: React.FC = () => {
 
   useEffect(() => {
     load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const addWater = async (glassesToAdd: number) => {
