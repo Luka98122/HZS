@@ -1,4 +1,5 @@
 # Wellness Buddy:
+Wellness Buddy is an all-in-one health and wellness assistant app. With Wellness Buddy you can track and log your physical activity and water intake, and also have wellness and focus sessions to help with work-life balance.
 ---
 # Landing page
 ![Hero](./domaci/demo/d_hero.png)
@@ -45,6 +46,10 @@ API on https://hak.hoi5.com/api/health
 # Build:
 Current build script (build.sh) is designed to be ran on the linux server. Can be executed with 'sh ./domaci/src/build.sh'
 
+# Demo video: 
+https://www.youtube.com/watch?v=eKqixMp9iF0
+
+
 # Requirements:
 - [X] Minimum 3 pages
 - [X] Make sure all pages are navigatable through UI
@@ -67,4 +72,4 @@ Current build script (build.sh) is designed to be ran on the linux server. Can b
 - [X] Go over all boilerplate text on site and make sure it uses the correct branding, etc.
 - [X] PDF documentation
 - [X] Exported mysql database
-- [ ] Upload all of the above to a cloud storage and email to hzs@fonis.rs
+- [X] Upload all of the above to a cloud storage and email to hzs@fonis.rs
