@@ -391,7 +391,10 @@ p {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 2rem;
+  justify-content: center;
 }
+
+
 
 .feature-card {
   background-color: var(--bg-card);
@@ -747,4 +750,11 @@ p {
   color: #4a5568;
   font-weight: 500;
   padding: 0.5rem 1rem;
+}
+
+@media (min-width: 900px) {
+  /* If there's 1 item in the last row, center it */
+  .features-grid .feature-card:nth-child {
+    grid-column: 2;
+  }
 }

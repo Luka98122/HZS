@@ -1,3 +1,35 @@
+# Wellness Buddy:
+---
+# Landing page
+![Hero](./domaci/demo/d_hero.png)
+![Features](./domaci/demo/d_features.png)
+![Info](./domaci/demo/d_info.png)
+![Devs & CTA](./domaci/demo/d_dev_cta.png)
+---
+# Dashboard
+![Dashboard](./domaci/demo/d_dashboard.png)
+![Recent](./domaci/demo/d_dashboard2.png)
+---
+# Stress Management
+![Stress Management](./domaci/demo/d_stress.png)
+---
+# Study
+![Study](./domaci/demo/d_study.png)
+![Study2](./domaci/demo/d_study2.png)
+---
+# Focus
+![Focus](./domaci/demo/d_focus.png)
+---
+# Hydration
+![Hydration](./domaci/demo/d_hydration.png)
+---
+# Workout
+![Workout](./domaci/demo/d_workout.png)
+---
+# Account
+![Account](./domaci/demo/d_account.png)
+---
+
 # Git repo za HZS
 ---
 # Tech Stack:
@@ -15,7 +47,7 @@ Current build script (build.sh) is designed to be ran on the linux server. Can b
 
 # Requirements:
 - [X] Minimum 3 pages
-- [ ] Make sure all pages are navigatable through UI
+- [X] Make sure all pages are navigatable through UI
 - [X] Databse with at least 2 tables
 - [X] Have a github repo
 - [ ] Switch repo to public

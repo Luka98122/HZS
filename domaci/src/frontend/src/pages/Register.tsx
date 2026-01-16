@@ -154,23 +154,6 @@ const Register: React.FC = () => {
 
   const passwordStrength = getPasswordStrength(formData.password);
 
-  // Check health endpoint
-  const checkHealth = async () => {
-    try {
-      const response = await fetch('https://hak.hoi5.com/api/health', {
-        credentials: 'include',
-      });
-      const data = await response.json();
-      console.log('Health check:', data);
-    } catch (error) {
-      console.error('Health check failed:', error);
-    }
-  };
-
-  // Call health check on component mount
-  React.useEffect(() => {
-    checkHealth();
-  }, []);
 
   return (
     <div className="auth-container">
@@ -219,7 +202,7 @@ const Register: React.FC = () => {
               id="username"
               autoComplete='new-password'
               onChange={handleChange}
-              placeholder="@username"
+              placeholder="username"
               className={errors.username ? 'error' : ''}
               disabled={isLoading}
               

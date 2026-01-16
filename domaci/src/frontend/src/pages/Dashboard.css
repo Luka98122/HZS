@@ -378,3 +378,9 @@
     align-self: flex-end;
   }
 }
+
+@media (min-width: 900px) {
+  .dashboard-grid .dashboard-card:nth-child(4) {
+    grid-column: 2;
+  }
+}

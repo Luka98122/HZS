@@ -355,12 +355,6 @@ const Study: React.FC = () => {
                 Log Distraction
               </button>
               <button 
-                className="btn btn-sm btn-primary"
-                onClick={logPomodoro}
-              >
-                Complete Pomodoro
-              </button>
-              <button 
                 className="btn btn-sm btn-danger"
                 onClick={completeStudySession}
               >
