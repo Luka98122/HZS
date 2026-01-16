@@ -293,3 +293,14 @@
     justify-content: center;
   }
 }
+
+.hydration-subtitle {
+  text-align: center;
+  width:100%
+}
+
+.hydration-title {
+  text-align: center;
+  margin-top: 20px;
+  width:100%
+}
