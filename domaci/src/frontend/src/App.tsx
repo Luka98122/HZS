@@ -58,7 +58,6 @@ const App: React.FC = () => {
     checkHealth();
   }, []);
 
-
   return (
     <div className="App">
       <header className="header">
@@ -76,7 +75,11 @@ const App: React.FC = () => {
                 {isAuthenticated ? (
                   <>
                     <Link to="/account" className="auth-link login-link">Account</Link>
-                    <button onClick={handleLogout} className="auth-link login-link" style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
+                    <button
+                      onClick={handleLogout}
+                      className="auth-link login-link"
+                      style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+                    >
                       Logout
                     </button>
                   </>
@@ -87,7 +90,7 @@ const App: React.FC = () => {
                   </>
                 )}
               </li>
-              <li className="cta-nav"><a href="#start">Get Started</a></li>
+              <li className="cta-nav"><a href="/register">Get Started</a></li>
             </ul>
           </nav>
         </div>
@@ -103,7 +106,7 @@ const App: React.FC = () => {
                 Track your progress, find your center, and reach your goals.
               </p>
               <div className="hero-buttons">
-                <a href="#start" className="btn btn-primary">Start Your Journey</a>
+                <a href="/register" className="btn btn-primary">Start Your Journey</a>
                 <a href="#features" className="btn btn-secondary">
                   <span>Explore Features</span>
                 </a>
@@ -121,8 +124,6 @@ const App: React.FC = () => {
                   <span className="stat-number">98%</span>
                   <span className="stat-label">Goal Success</span>
                 </div>
-                
-
               </div>
             </div>
             <div className="hero-visual">
@@ -162,29 +163,42 @@ const App: React.FC = () => {
           </div>
         </section>
 
+        {/* REWRITTEN: FEATURES (based on backend endpoints) */}
         <section id="features" className="features">
           <div className="container">
-            <h2 className="section-title">Why <span className="highlight">Wellness Buddy</span>?</h2>
+            <h2 className="section-title">What You Can Do with <span className="highlight">Wellness Buddy</span></h2>
             <div className="features-grid">
               <div className="feature-card">
-                <div className="feature-icon">📊</div>
-                <h3>Holistic Tracking</h3>
-                <p>Track your movement, mood and mental clarity with our intuitive system.</p>
+                <div className="feature-icon">📈</div>
+                <h3>Your Weekly Dashboard</h3>
+                <p>
+                  Get a weekly overview of your progress—workouts, study hours, streaks, mood average,
+                  water intake, focus sessions, and calories—all in one place.
+                </p>
               </div>
               <div className="feature-card">
-                <div className="feature-icon">🧠</div>
-                <h3>Personalized Balance</h3>
-                <p>Plans for fitness, mindfulness and work-life harmony tailored for you.</p>
+                <div className="feature-icon">🧘</div>
+                <h3>Focus & Calm Sessions</h3>
+                <p>
+                  Start guided focus sessions with a chosen session type and duration, optionally add breathing
+                  patterns and ambient sound, then review your recent session history anytime.
+                </p>
               </div>
               <div className="feature-card">
-                <div className="feature-icon">🏆</div>
-                <h3>Personal Challenges</h3>
-                <p>Set up and complete your goals on weekly and monthly basis.</p>
+                <div className="feature-icon">📝</div>
+                <h3>Mood, Journal & Gratitude</h3>
+                <p>
+                  Check in with a mood score (and notes), write stress journal entries, and build a gratitude habit
+                  with daily entries—then see your recent history and weekly mood average.
+                </p>
               </div>
               <div className="feature-card">
-                <div className="feature-icon">🥗</div>
-                <h3>Expert Guidance</h3>
-                <p>Access tips and video guides from certified coaches and nutritionists.</p>
+                <div className="feature-icon">🏋️</div>
+                <h3>Study + Fitness Tracking</h3>
+                <p>
+                  Track study sessions with distractions and pomodoros, manage tasks and streaks, and log workouts
+                  exercise-by-exercise. Plus, record water intake and use stretch reminders to stay consistent.
+                </p>
               </div>
             </div>
           </div>
@@ -196,18 +210,27 @@ const App: React.FC = () => {
             <div className="steps">
               <div className="step">
                 <div className="step-number">1</div>
-                <h3>Set Your Goals</h3>
-                <p>Tell us what you want to achieve—weight loss, muscle gain, or better endurance.</p>
+                <h3>Create Your Account</h3>
+                <p>
+                  Register and log in to start a secure session. Update your profile anytime—or delete your account
+                  whenever you want.
+                </p>
               </div>
               <div className="step">
                 <div className="step-number">2</div>
-                <h3>Follow the Plan</h3>
-                <p>Receive your daily workout and wellness plan, customized just for you.</p>
+                <h3>Onboard & Get Recommendations</h3>
+                <p>
+                  Complete a quick onboarding quiz (physical, study, focus, and stress goals) and get personalized
+                  recommendations generated for you.
+                </p>
               </div>
               <div className="step">
                 <div className="step-number">3</div>
-                <h3>See Results</h3>
-                <p>Track your improvements over time and celebrate your milestones.</p>
+                <h3>Track Daily Habits, See Weekly Progress</h3>
+                <p>
+                  Log workouts, water, study sessions, focus sessions, mood, journal, and gratitude. Then review your
+                  weekly dashboard to spot patterns and build better routines.
+                </p>
               </div>
             </div>
           </div>

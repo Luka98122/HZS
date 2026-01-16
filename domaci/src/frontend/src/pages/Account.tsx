@@ -207,6 +207,7 @@ const Account: React.FC = () => {
                                 type="password"
                                 id="newPassword"
                                 value={newPassword}
+                                autoComplete='new-password'
                                 onChange={(e) => setNewPassword(e.target.value)}
                                 placeholder="New Password"
                             />

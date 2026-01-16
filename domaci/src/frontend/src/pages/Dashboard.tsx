@@ -742,7 +742,7 @@ const Dashboard: React.FC = () => {
             ></div>
           </div>
           <div className="progress-label">
-            <span>Goal: 5,000 kcal</span>
+            <span>Goal: {goals.caloriesBurnWeek} kcal</span>
             <span>{calculateProgress(caloriesWeek, goals.caloriesBurnWeek).toFixed(0)}%</span>
           </div>
         </div>

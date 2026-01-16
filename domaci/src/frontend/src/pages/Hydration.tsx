@@ -7,7 +7,14 @@ type WeekEntry = {
   glasses: number;
 };
 
-const API_BASE = "https://hak.hoi5.com/api/"; 
+type GoalsResponse = {
+  water_per_day_glasses?: number;
+  water_goal_glasses?: number; // optional alias
+  waterPerDay?: number;        // optional alias if you ever return camelCase
+};
+
+const API_BASE = "https://hak.hoi5.com/api"; // ✅ no trailing slash
+
 const Hydration: React.FC = () => {
   const [todayGlasses, setTodayGlasses] = useState<number>(0);
   const [week, setWeek] = useState<WeekEntry[]>([]);
@@ -19,7 +26,19 @@ const Hydration: React.FC = () => {
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
 
-  const goal = 8; // simple default (can later come from onboarding/account)
+  // ✅ goal comes from /goals, same as dashboard (default fallback = 8)
+  const [goal, setGoal] = useState<number>(8);
+
+  const toNumber = (value: unknown, fallback = 0): number => {
+    const n =
+      typeof value === "number"
+        ? value
+        : typeof value === "string"
+        ? Number(value)
+        : NaN;
+
+    return Number.isFinite(n) ? n : fallback;
+  };
 
   const progressPct = useMemo(() => {
     const pct = (todayGlasses / goal) * 100;
@@ -39,7 +58,11 @@ const Hydration: React.FC = () => {
     // Accept YYYY-MM-DD or ISO string
     const d = new Date(dateStr.length === 10 ? `${dateStr}T00:00:00` : dateStr);
     if (Number.isNaN(d.getTime())) return dateStr;
-    return d.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" });
+    return d.toLocaleDateString(undefined, {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+    });
   };
 
   const clearMessages = () => {
@@ -54,7 +77,6 @@ const Hydration: React.FC = () => {
     });
 
     if (!res.ok) {
-      // if not logged in, backend likely returns 401
       throw new Error(`Failed to load today's water (${res.status})`);
     }
 
@@ -84,24 +106,49 @@ const Hydration: React.FC = () => {
 
     const data = await res.json();
 
-    // Expecting: Array<{date, glasses}>
-    const normalized: WeekEntry[] = Array.isArray(data)
+    // ✅ backend returns { week: [...] }, dashboard also supports other shapes
+    const arr: any[] = Array.isArray(data)
       ? data
-          .map((x: any) => ({
-            date: String(x?.date ?? ""),
-            glasses: Number(x?.glasses ?? 0),
-          }))
-          .filter((x) => x.date)
-      : [];
+      : data?.week ?? data?.entries ?? data?.history ?? [];
+
+    const normalized: WeekEntry[] = (Array.isArray(arr) ? arr : [])
+      .map((x: any) => ({
+        date: String(x?.date ?? ""),
+        glasses: Number(x?.glasses ?? 0),
+      }))
+      .filter((x) => x.date);
 
     setWeek(normalized);
+  };
+
+  // ✅ fetch goal from /goals (same idea as dashboard)
+  const fetchGoal = async () => {
+    const res = await fetch(`${API_BASE}/goals`, {
+      method: "GET",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (!res.ok) {
+      // if goals endpoint fails, keep default goal = 8 (don’t block hydration)
+      return;
+    }
+
+    const g: GoalsResponse = await res.json();
+
+    const waterPerDay = toNumber(
+      g?.water_per_day_glasses ?? g?.water_goal_glasses ?? (g as any)?.waterPerDay,
+      8
+    );
+
+    setGoal(waterPerDay > 0 ? waterPerDay : 8);
   };
 
   const load = async () => {
     setLoading(true);
     clearMessages();
     try {
-      await Promise.all([fetchToday(), fetchWeek()]);
+      await Promise.all([fetchGoal(), fetchToday(), fetchWeek()]);
     } catch (e: any) {
       setError(e?.message ?? "Something went wrong loading hydration data.");
     } finally {
@@ -142,7 +189,6 @@ const Hydration: React.FC = () => {
       setTodayGlasses(newTotal);
       setSuccess(`Logged +${glassesToAdd} glass${glassesToAdd === 1 ? "" : "es"}!`);
 
-      // Refresh week so the chart/list updates immediately
       await fetchWeek();
     } catch (e: any) {
       setError(e?.message ?? "Could not log water.");
@@ -181,83 +227,6 @@ const Hydration: React.FC = () => {
           )}
 
           <div className="hydration-grid">
-            {/* Today */}
-            <div className="hydration-card">
-              <div className="hydration-card-header">
-                <h2 className="hydration-card-title">Today</h2>
-                <span className="hydration-pill">
-                  {todayGlasses} / {goal} glasses
-                </span>
-              </div>
-
-              <div className="hydration-progress">
-                <div className="hydration-progress-bar">
-                  <div
-                    className="hydration-progress-fill"
-                    style={{ width: `${progressPct}%` }}
-                    aria-label="Hydration progress"
-                  />
-                </div>
-                <div className="hydration-progress-meta">
-                  <span className="hydration-muted">
-                    {progressPct.toFixed(0)}% of goal
-                  </span>
-                  <span className="hydration-muted">{todayYMD()}</span>
-                </div>
-              </div>
-
-              <div className="hydration-actions">
-                <button
-                  className="hydration-quick"
-                  onClick={() => quickAdd(1)}
-                  disabled={submitting}
-                >
-                  +1
-                </button>
-                <button
-                  className="hydration-quick"
-                  onClick={() => quickAdd(2)}
-                  disabled={submitting}
-                >
-                  +2
-                </button>
-                <button
-                  className="hydration-quick"
-                  onClick={() => quickAdd(3)}
-                  disabled={submitting}
-                >
-                  +3
-                </button>
-
-                <div className="hydration-divider" />
-
-                <div className="hydration-custom">
-                  <label className="hydration-label" htmlFor="addAmount">
-                    Add glasses
-                  </label>
-                  <div className="hydration-custom-row">
-                    <input
-                      id="addAmount"
-                      className="hydration-input"
-                      type="number"
-                      min={1}
-                      max={30}
-                      value={addAmount}
-                      onChange={(e) => setAddAmount(Number(e.target.value))}
-                      disabled={submitting}
-                    />
-                    <button
-                      className="btn btn-primary hydration-log-btn"
-                      onClick={() => addWater(addAmount)}
-                      disabled={submitting || addAmount <= 0}
-                    >
-                      {submitting ? "Logging…" : "Log"}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
             {/* Week */}
             <div className="hydration-card">
               <div className="hydration-card-header">
@@ -297,6 +266,71 @@ const Hydration: React.FC = () => {
                 Tip: Aim for steady intake throughout the day — especially around workouts.
               </p>
             </div>
+
+            {/* Today */}
+            <div className="hydration-card">
+              <div className="hydration-card-header">
+                <h2 className="hydration-card-title">Today</h2>
+                <span className="hydration-pill">
+                  {todayGlasses} / {goal} glasses
+                </span>
+              </div>
+
+              <div className="hydration-progress">
+                <div className="hydration-progress-bar">
+                  <div
+                    className="hydration-progress-fill"
+                    style={{ width: `${progressPct}%` }}
+                    aria-label="Hydration progress"
+                  />
+                </div>
+                <div className="hydration-progress-meta">
+                  <span className="hydration-muted">{progressPct.toFixed(0)}% of goal</span>
+                  <span className="hydration-muted">{todayYMD()}</span>
+                </div>
+              </div>
+
+              <div className="hydration-actions">
+                <button className="hydration-quick" onClick={() => quickAdd(1)} disabled={submitting}>
+                  +1
+                </button>
+                <button className="hydration-quick" onClick={() => quickAdd(2)} disabled={submitting}>
+                  +2
+                </button>
+                <button className="hydration-quick" onClick={() => quickAdd(3)} disabled={submitting}>
+                  +3
+                </button>
+
+                <div className="hydration-divider" />
+
+                <div className="hydration-custom">
+                  <label className="hydration-label" htmlFor="addAmount">
+                    Add glasses
+                  </label>
+                  <div className="hydration-custom-row">
+                    <input
+                      id="addAmount"
+                      className="hydration-input"
+                      type="number"
+                      min={1}
+                      max={30}
+                      value={addAmount}
+                      onChange={(e) => setAddAmount(Number(e.target.value))}
+                      disabled={submitting}
+                    />
+                    <button
+                      className="btn btn-primary hydration-log-btn"
+                      onClick={() => addWater(addAmount)}
+                      disabled={submitting || addAmount <= 0}
+                    >
+                      {submitting ? "Logging…" : "Log"}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            
           </div>
         </>
       )}
