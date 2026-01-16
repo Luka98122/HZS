@@ -544,3 +544,9 @@
   border: 1px dashed rgba(255, 255, 255, 0.2);
   opacity: 0.85;
 }
+
+@media (max-width: 480px) {
+  .mood-btn{
+    font-size: 1.65rem;
+  }
+}
