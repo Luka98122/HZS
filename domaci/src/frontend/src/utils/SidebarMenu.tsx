@@ -217,7 +217,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({
           width: "50px",
           height: "50px",
           borderRadius: "50%",
-          backgroundColor: isOpen ? "#3b82f6" : "#1e293b",
+          backgroundColor: isOpen ? "#007B5F" : "#1e293b",
           color: "white",
           border: "none",
           cursor: isDraggable ? "grab" : "pointer",

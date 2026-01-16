@@ -166,7 +166,7 @@ const App: React.FC = () => {
         {/* REWRITTEN: FEATURES (based on backend endpoints) */}
         <section id="features" className="features">
           <div className="container">
-            <h2 className="section-title">What You Can Do with <span className="highlight">Wellness Buddy</span></h2>
+            <h2 className="section-title section-title1">What You Can Do with <span className="highlight">Wellness Buddy</span></h2>
             <div className="features-grid">
               <div className="feature-card">
                 <div className="feature-icon">📈</div>
@@ -206,7 +206,7 @@ const App: React.FC = () => {
 
         <section id="workouts" className="how-it-works">
           <div className="container">
-            <h2 className="section-title">How It <span className="highlight">Works</span></h2>
+            <h2 className="section-title section-title1">How It <span className="highlight">Works</span></h2>
             <div className="steps">
               <div className="step">
                 <div className="step-number">1</div>

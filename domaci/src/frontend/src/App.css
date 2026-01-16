@@ -383,6 +383,10 @@ p {
   margin-bottom: 4rem;
 }
 
+.section-title1 {
+ padding-bottom: 48px;
+}
+
 .features-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
