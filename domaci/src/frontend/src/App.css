@@ -754,7 +754,7 @@ p {
 
 @media (min-width: 900px) {
   /* If there's 1 item in the last row, center it */
-  .features-grid .feature-card:nth-child {
+  .features-grid .feature-card:last-child {
     grid-column: 2;
   }
 }
