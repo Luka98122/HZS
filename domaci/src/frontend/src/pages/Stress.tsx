@@ -32,6 +32,10 @@ type FocusSession = {
   created_at?: string;
 };
 
+type RecentJournalResponse = {
+  entries: JournalEntry[];
+};
+
 const API_BASE = 'https://hak.hoi5.com/api';
 
 async function apiFetch<T>(
@@ -71,7 +75,8 @@ async function apiFetch<T>(
 }
 
 type SoundscapeKind = 'rain' | 'forest' | 'white';
-
+type RecentMoodsResponse = { moods: MoodEntry[] };
+1
 function createNoiseBuffer(ctx: AudioContext, seconds = 2): AudioBuffer {
   const sampleRate = ctx.sampleRate;
   const buffer = ctx.createBuffer(1, sampleRate * seconds, sampleRate);
@@ -120,6 +125,8 @@ const Stress: React.FC = () => {
   const gainRef = useRef<GainNode | null>(null);
   const extraNodeRef = useRef<BiquadFilterNode | OscillatorNode | null>(null);
 
+  
+
   const patternLabel = useMemo(() => `4-7-8`, []);
   const breathingPatternString = useMemo(() => `4-7-8 (${inhaleSec}-${holdSec}-${exhaleSec})`, [inhaleSec, holdSec, exhaleSec]);
 
@@ -129,19 +136,26 @@ const Stress: React.FC = () => {
   }, []);
 
   const refreshMood = useCallback(async () => {
-    const [recent, avgRaw] = await Promise.all([
-      apiFetch<MoodEntry[]>('/mood/recent'),
+    const [recentRes, avgRaw] = await Promise.all([
+      apiFetch<RecentMoodsResponse>('/mood/recent'),
       apiFetch<WeeklyMoodAverage>('/mood/average'),
     ]);
 
-    setRecentMoods(Array.isArray(recent) ? recent : []);
-    const avg = typeof avgRaw?.average === 'number' ? avgRaw.average : (typeof avgRaw?.avg === 'number' ? avgRaw.avg : null);
+    setRecentMoods(Array.isArray(recentRes?.moods) ? recentRes.moods : []);
+
+    const avg =
+      typeof avgRaw?.average === 'number'
+        ? avgRaw.average
+        : typeof avgRaw?.avg === 'number'
+          ? avgRaw.avg
+          : null;
+
     setWeeklyMoodAvg(avg);
   }, []);
 
   const refreshJournal = useCallback(async () => {
-    const recent = await apiFetch<JournalEntry[]>('/journal/recent');
-    setRecentJournals(Array.isArray(recent) ? recent : []);
+    const res = await apiFetch<RecentJournalResponse>('/journal/recent');
+    setRecentJournals(Array.isArray(res?.entries) ? res.entries : []);
   }, []);
 
   useEffect(() => {

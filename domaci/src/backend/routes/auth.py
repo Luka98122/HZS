@@ -127,6 +127,7 @@ def register():
         return jsonify({"error": str(e)}), 400
 
 
+
 @auth_bp.route("/login", methods=["POST"])
 def login():
     data = request.get_json(silent=True)

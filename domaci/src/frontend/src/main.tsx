@@ -18,6 +18,7 @@ import Hydration from './pages/Hydration.tsx'
 import Home from './pages/Home.tsx'
 import ScrollToTop from "./utils/ScrollToTop";
 import SidebarMenu from './utils/SidebarMenu';
+import RequireSession from './utils/RequireSession.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -28,18 +29,23 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/" element={<App />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/account" element={<Account />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/privacy" element={<Privacy />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/onboarding" element={<Onboarding />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/workout" element={<Workout />} />
-        <Route path="/study" element={<Study />} />
-        <Route path="/focus" element={<Focus />} />
-        <Route path="/stress" element={<Stress />} />
-        <Route path="/hydration" element={<Hydration />} />
+
+        {/* 🔒 Protected routes */}
+        <Route element={<RequireSession />}>
+          <Route path="/account" element={<Account />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/onboarding" element={<Onboarding />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/workout" element={<Workout />} />
+          <Route path="/study" element={<Study />} />
+          <Route path="/focus" element={<Focus />} />
+          <Route path="/stress" element={<Stress />} />
+          <Route path="/hydration" element={<Hydration />} />
+        </Route>
       </Routes>
+
     </Router>
   </StrictMode>,
 )

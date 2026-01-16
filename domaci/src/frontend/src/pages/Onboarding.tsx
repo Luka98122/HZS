@@ -274,9 +274,7 @@ const Onboarding: React.FC = () => {
               <Link to="/dashboard" className="btn btn-primary">
                 Go to Dashboard
               </Link>
-              <button className="btn btn-secondary" onClick={() => navigate('/dashboard')}>
-                Skip Link (alt)
-              </button>
+              
             </div>
           </div>
         )}
