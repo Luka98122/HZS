@@ -268,6 +268,12 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({
           opacity: isOpen ? 1 : 0,
           visibility: isOpen ? "visible" : "hidden",
           transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+
+          // ✅ add these
+          maxHeight: "calc(100vh - 85px)", // keep some margin
+          overflowY: "auto",
+          overscrollBehavior: "contain",
+          WebkitOverflowScrolling: "touch",
         }}
       >
         <div
