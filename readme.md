@@ -1,5 +1,5 @@
 # Wellness Buddy:
-Wellness Buddy is an all-in-one health and wellness assistant app. With Wellness Buddy you can track and log your physical activity and water intake, and also have wellness and focus sessions to help with work-life balance.
+Wellness Buddy is an all-in-one health and wellness assistant app, developed for the FON high school hackathon. With Wellness Buddy you can track and log your physical activity and water intake, and also have wellness and focus sessions to help with work-life balance.
 ---
 # Landing page
 ![Hero](./domaci/demo/d_hero.png)
